@@ -1,0 +1,1 @@
+return loadfile('polaris/games/6872274481.lua')
