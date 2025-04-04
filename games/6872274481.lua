@@ -1,8 +1,8 @@
 if not isfolder('polaris') then return nil end
 
-local library: table = readfile('polaris/libraries/interface.lua')
-local utils: table = readfile('polaris/libraries/utils.lua')
-local weapons: table = readfile('polaris/libraries/weapons.lua')
+local library: table = loadfile('polaris/libraries/interface.lua')()
+local utils: table = loadfile('polaris/libraries/utils.lua')()
+local weapons: table = loadfile('polaris/libraries/weapons.lua')()
 local connections: table = {}
 
 local cloneref = cloneref or function(v) return v end
@@ -14,7 +14,6 @@ local RunService: RunService = cloneref(game:GetService('RunService'))
 local TweenService: TweenService = cloneref(game:GetService('TweenService'))
 local CollectionService: CollectionService = cloneref(game:GetService("CollectionService"))
 local lplr: Players = Players.LocalPlayer
-local DefaultChatSystemChatEvents: ReplicatedStorage = ReplicatedStorage:WaitForChild("DefaultChatSystemChatEvents")
 local inventory = workspace[lplr.Name].InventoryFolder.Value
 
 local user: string = lplr.Name
@@ -45,13 +44,13 @@ table.insert(connections, function(char)
 	inventory = workspace[lplr.Name].InventoryFolder.Value
 end)
 
-local Combat = library.NewWindow('Combat')
-local Player = library.NewWindow('Player')
-local Motion = library.NewWindow('Motion')
-local Visuals = library.NewWindow('Visuals')
-local Misc = library.NewWindow('Misc')
-local Exploit = library.NewWindow('Exploit')
-local Legit = library.NewWindow('Legit')
+Combat = library.NewWindow('Combat')
+Player = library.NewWindow('Player')
+Motion = library.NewWindow('Motion')
+Visuals = library.NewWindow('Visuals')
+Misc = library.NewWindow('Misc')
+Exploit = library.NewWindow('Exploit')
+Legit = library.NewWindow('Legit')
 
 local _NetManaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged
 local blockenginemanaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules:WaitForChild("@easy-games"):WaitForChild("block-engine").node_modules:WaitForChild("@rbxts").net.out:WaitForChild("_NetManaged")
@@ -114,3 +113,54 @@ local function spoofHand(item)
 		})
 	end
 end
+
+local viewmodel = workspace.Camera.Viewmodel.RightHand.RightWrist
+local weld = viewmodel.C0
+local oldweld = viewmodel.C0
+
+table.insert(connections, Aura)
+Aura = Combat.NewButton({
+    Name = "Aura",
+    Function = function(calling)
+        if calling then
+            task.spawn(function()
+                connections.Aura = RunService.Heartbeat:Connect(function()
+                    local nearest = getNearestPlayer(18)
+                    if nearest ~= nil then
+                        local nearestCharacter = nearest.Character
+                        local nearestPrimaryPartPosition = nearestCharacter.PrimaryPart.Position
+                        local selfPrimaryPartPosition = lplr.Character.PrimaryPart.Position
+                        local weapon = getBestWeapon()
+                        spoofHand(weapon.Name)
+                    end
+
+                    task.spawn(function()
+                        remotes.SwordHit:FireServer({
+                            chargedAttack = {
+                                chargeRatio = 0
+                            },
+                            entityInstance = nearestCharacter,
+                            validate = {
+                                raycast = {
+                                    cameraPosition = workspace.CurrentCamera,
+                                    cursorDirection = CFrame.LookVector
+                                },
+                                targetPosition = {
+                                    value = nearestPrimaryPartPosition
+                                },
+                                selfPosition = {
+                                    value = selfPrimaryPartPosition
+                                },
+                            },
+                            weapon = weapon
+                        })
+                    end)
+                end)
+            end)
+        else
+            pcall(function()
+                connections.Aura:Disconnect()
+            end)
+        end
+    end
+})
