@@ -101,7 +101,7 @@ local arrayItems = {}
 local arraylist = {
 	Create = function(o)
 
-		local item = Instance.new("TextLabel",arrayListFrame)
+		local item = Instance.new("TextLabel", arrayListFrame)
 		item.Text = o
 		item.BackgroundTransparency = 0.3
 		item.BorderSizePixel = 0

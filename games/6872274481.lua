@@ -1,6 +1,6 @@
 if not isfolder('polaris') then return nil end
 
-local library: table = readfile('polaris/libs/interface.lua')
+local library: table = readfile('polaris/libraries/interface.lua')
 local utils: table = readfile('polaris/libs/utils.lua')
 local connections: table = {}
 
@@ -52,8 +52,7 @@ Misc = library.NewWindow("Misc")
 Exploit = library.NewWindow("Exploit")
 Legit = library.NewWindow("Legit")
 
-local weapons: table = readfile('polaris/libs/weapons.lua')
-local utils: table = readfile('polaris/libs/utils.lua')
+local weapons: table = readfile('polaris/libraries/weapons.lua')
 
 local _NetManaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged
 local blockenginemanaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules:WaitForChild("@easy-games"):WaitForChild("block-engine").node_modules:WaitForChild("@rbxts").net.out:WaitForChild("_NetManaged")
