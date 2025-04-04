@@ -1,6 +1,6 @@
 local cloneref = cloneref or function(v) return v end
 local HttpService: HttpService = cloneref(game:GetService("HttpService"))
-local Folders: table = {'', 'libraries', 'ui'}
+local Folders: table = {'', 'libraries', 'games'}
 for _,v in {'polaris', 'polaris/libraries', 'polaris/games', 'polaris/configs'} do
     if not isfolder(v) then makefolder(v) end
 end
