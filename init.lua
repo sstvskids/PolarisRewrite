@@ -12,7 +12,7 @@ local suc, res = pcall(function()
             local jsonURL: table = HttpService:JSONDecode(url)
             for _, i in jsonURL do
                 if i.type == 'file' then
-                    local file: string = 'Flux/'..i.path
+                    local file: string = 'polaris/'..i.path
                     if isfile(file) then
                         delfile(file)
                         writefile(file, game:HttpGet(i.download_url))
