@@ -2,6 +2,7 @@ if not isfolder('polaris') then return nil end
 
 local library: table = readfile('polaris/libraries/interface.lua')
 local utils: table = readfile('polaris/libraries/utils.lua')
+local weapons: table = readfile('polaris/libraries/weapons.lua')
 local connections: table = {}
 
 local cloneref = cloneref or function(v) return v end
@@ -44,15 +45,13 @@ table.insert(connections, function(char)
 	inventory = workspace[lplr.Name].InventoryFolder.Value
 end)
 
-Combat = library.NewWindow("Combat")
-Player = library.NewWindow("Player")
-Motion = library.NewWindow("Motion")
-Visuals = library.NewWindow("Visuals")
-Misc = library.NewWindow("Misc")
-Exploit = library.NewWindow("Exploit")
-Legit = library.NewWindow("Legit")
-
-local weapons: table = readfile('polaris/libraries/weapons.lua')
+local Combat = library.NewWindow('Combat')
+local Player = library.NewWindow('Player')
+local Motion = library.NewWindow('Motion')
+local Visuals = library.NewWindow('Visuals')
+local Misc = library.NewWindow('Misc')
+local Exploit = library.NewWindow('Exploit')
+local Legit = library.NewWindow('Legit')
 
 local _NetManaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged
 local blockenginemanaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules:WaitForChild("@easy-games"):WaitForChild("block-engine").node_modules:WaitForChild("@rbxts").net.out:WaitForChild("_NetManaged")
