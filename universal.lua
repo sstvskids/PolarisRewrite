@@ -19,6 +19,7 @@ local HurtTime: string = 0
 local release: string = 'rewrite'
 
 repeat task.wait() until game:IsLoaded() and lplr.Character
+if utils.getDevice == 'mobile' then return lplr:Kick('no mobile support :) - stav') end
 
 if not isfile("polaris/configs/"..game.PlaceId..".json") then library.saveConfig() end
 library.loadConfig()
