@@ -1,7 +1,7 @@
 if not isfolder('polaris') then return nil end
 
 local library: table = readfile('polaris/libraries/interface.lua')
-local utils: table = readfile('polaris/libs/utils.lua')
+local utils: table = readfile('polaris/libraries/utils.lua')
 local connections: table = {}
 
 local cloneref = cloneref or function(v) return v end
