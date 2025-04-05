@@ -24,7 +24,7 @@ local suc, res = pcall(function()
 end)
 
 if suc then
-    loadfile('polaris/init.lua')()
+    return loadfile('polaris/init.lua')()
 else
     return warn('._stav on discord for issues like this: '..res)
 end

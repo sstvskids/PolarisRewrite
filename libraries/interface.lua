@@ -411,7 +411,7 @@ library.NewWindow = function(name)
 					Enabled = not Enabled
 				end
 				v2.Enabled = Enabled
-				task.spawn(function()
+				coroutine.wrap(function()
 					v.Function(Enabled)
 				end)
 				textbutton2.BackgroundColor3 = (textbutton2.BackgroundColor3 == Color3.fromRGB(60,60,60) and library.Color or Color3.fromRGB(60,60,60))
