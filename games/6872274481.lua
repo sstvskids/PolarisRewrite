@@ -488,7 +488,7 @@ BlockingAnimation = Visuals.NewButton({
 	end,
 })
 
-local oldFOV = wroskapce.CurrentCamera.FieldOfView
+local oldFOV = workspace.CurrentCamera.FieldOfView
 table.insert(RBXScriptConnections, 'Camera')
 Camera = Visuals.NewButton({
 	Name = "FOVChanger",
