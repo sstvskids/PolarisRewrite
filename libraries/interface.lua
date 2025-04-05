@@ -374,7 +374,7 @@ library.NewWindow = function(name)
 			end
 
 			lib2.Enabled = enabled
-			coroutine.wrap(function()
+			task.spawn(function()
 				task.delay(0.1, function()
 					Table.Function(enabled)
 				end)
