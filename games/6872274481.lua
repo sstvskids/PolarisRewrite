@@ -508,9 +508,9 @@ Uninject = Misc.NewButton({
 	Name = "Uninject",
 	Function = function(callback)
 		if callback then
-            library:uninject()
             task.spawn(function()
                 Uninject.ToggleButton(false)
+                library:uninject()
             end)
 		end
 	end,
