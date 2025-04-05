@@ -398,6 +398,7 @@ Uninject = Misc.NewButton({
 	Function = function(callback)
 		if callback then
             library:uninject()
+            Uninject.ToggleButton(false)
 		end
 	end,
 })
