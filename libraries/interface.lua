@@ -319,6 +319,7 @@ library.NewWindow = function(name)
 	lib.NewButton = function(Table)
 		library.Modules[Table.Name] = {
 			Keybind = Table.Keybind,
+			Function = Table.Function
 		}
 
 		if config.Buttons[Table.Name] == nil then
@@ -517,13 +518,15 @@ library.NewWindow = function(name)
 end
 
 function library:uninject()
-	library.saveConfig()
 	cansave = false
 
     for i,v in pairs(library.Modules) do
         if config.Buttons[i] and config.Buttons[i].Enabled then
             arraylist.Remove(i)
             config.Buttons[i].Enabled = false
+			task.spawn(function()
+				v.Function(false)
+			end)
         end
         config.Keybinds[i] = nil
     end
