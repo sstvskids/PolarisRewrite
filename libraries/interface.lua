@@ -409,7 +409,7 @@ library.NewWindow = function(name)
 				end
 				v2.Enabled = Enabled
 				task.spawn(function()
-					v["Function"](Enabled)
+					v.Function(Enabled)
 				end)
 				textbutton2.BackgroundColor3 = (textbutton2.BackgroundColor3 == Color3.fromRGB(60,60,60) and library.Color or Color3.fromRGB(60,60,60))
 				config.Toggles[v.Name.."_"..Table.Name].Enabled = Enabled

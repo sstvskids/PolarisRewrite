@@ -4,6 +4,7 @@ local library: table = loadfile('polaris/libraries/interface.lua')()
 local utils: table = loadfile('polaris/libraries/utils.lua')()
 local weapons: table = loadfile('polaris/libraries/weapons.lua')()
 local connections: table = {}
+local RBXScriptConnections: table = {}
 
 local cloneref = cloneref or function(v) return v end
 local Players: Players = cloneref(game:GetService('Players'))
@@ -195,12 +196,12 @@ local funAnimations: table = {
 local animAuraTab: table = {}
 for i,v in pairs(auraAnimations) do table.insert(animAuraTab, i) end
 local targetInfo = Instance.new("TextLabel", lplr.PlayerGui)
-table.insert(connections, Aura)
+table.insert(RBXScriptConnections, Aura)
 Aura = Combat.NewButton({
     Name = "Aura",
     Function = function(calling)
-	    if calling then
-            connections.Aura = RunService.Heartbeat:Connect(function()
+        if calling then
+            RBXScriptConnections.Aura = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil then
                     local nearestCharacter = nearest.Character
@@ -212,122 +213,104 @@ Aura = Combat.NewButton({
                     task.spawn(function()
                         remotes.SwordHit:FireServer({
                             chargedAttack = {
-                                chargeRatio = 0,
+                                chargeRatio = 0
                             },
                             entityInstance = nearestCharacter,
                             validate = {
                                 raycast = {
                                     cameraPosition = workspace.CurrentCamera,
-                                    cursorDirection = CFrame.LookVector,
+                                        cursorDirection = CFrame.LookVector
+                                    },
+                                    targetPosition = {
+                                        value = nearestPrimaryPartPosition
+                                    },
+                                    selfPosition = {
+                                        value = selfPrimaryPartPosition
+                                    },
                                 },
-                                targetPosition = {
-                                    value = nearestPrimaryPartPosition,
-                                },
-                                selfPosition = {
-                                    value = selfPrimaryPartPosition,
-                                },
-                            },
-                            weapon = weapon,
+                            weapon = weapon
                         })
                     end)
                 end
 
                 task.spawn(function()
-                    repeat task.wait()
-                        if nearest ~= nil then
-                            pcall(function()
-                                local animation = auraAnimations[auraAnimation.Option]
-                                local allTime = 0
-                                task.spawn(function()
-                                    if CustomAnimation.Enabled then
-                                        animRunning = true
-                                        for i, v in pairs(animation) do
-                                            allTime += v.Timer
-                                        end
-                                        for i, v in pairs(animation) do
-                                            local tween = TweenService:Create(
-                                                viewmodel,
-                                                TweenInfo.new(v.Timer),
-                                                { C0 = oldweld * v.CFrame }
-                                            )
-                                            tween:Play()
-                                            task.wait(v.Timer - 0)
-                                        end
-                                        animRunning = false
-                                        game.TweenService:Create(viewmodel, TweenInfo.new(1), { C0 = oldweld }):Play()
+                    if nearest ~= nil then
+                        pcall(function()
+                            local animation = auraAnimations[auraAnimation.Option]
+                            local allTime = 0
+                            task.spawn(function()
+                                if CustomAnimation.Enabled then
+                                    animRunning = true
+                                    for i,v in pairs(animation) do allTime += v.Timer end
+                                    for i,v in pairs(animation) do
+                                        local tween = TweenService:Create(viewmodel, TweenInfo.new(v.Timer), {C0 = oldweld * v.CFrame})
+                                        tween:Play()
+                                        task.wait(v.Timer - 0)
                                     end
-                                end)
+                                    animRunning = false
+                                    game.TweenService:Create(viewmodel, TweenInfo.new(1), {C0 = oldweld}):Play()
+                                end
                             end)
-                        end
-                    until not Aura.Enabled
+                        end)
+                    end
                 end)
 
                 task.spawn(function()
-                    repeat
-                        task.wait()
-                        if nearest ~= nil then
-                            local isWinning = function()
-                                return nearest.Character.Humanoid.Health > lplr.Character.Humanoid.Health
-                            end
-                            if targetInfo ~= nil then
-                                targetInfo = Instance.new("TextLabel", lplr.PlayerGui)
-                            end
-
-                            if TargetHudMode.Option == "Basic" then
-                                pcall(function()
-                                    targetInfo.Size = UDim2.fromScale(0.12, 0.05)
-                                    targetInfo.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-                                    targetInfo.BorderSizePixel = 0
-                                    targetInfo.AnchorPoint = Vector2.new(0.5, 0.5)
-                                    targetInfo.Position = UDim2.fromScale(0.6, 0.5)
-                                    targetInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
-                                    targetInfo.Text = "  "
-                                        .. nearest.DisplayName
-                                        .. " - IsWinning: "
-                                        .. tostring(isWinning())
-                                    targetInfo.TextXAlignment = Enum.TextXAlignment.Left
-
-                                    local hp = Instance.new("Frame", targetInfo)
-                                    hp.Position = UDim2.fromScale(0, 0.9)
-                                    hp.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-                                    hp.BorderSizePixel = 0
-
-                                    TweenService:Create(hp, TweenInfo.new(1), {
-                                        Size = UDim2.fromScale(0.01 * nearest.Character.Humanoid.Health, 0.1),
-                                    }):Play()
-                                end)
-                            elseif TargetHudMode.Option == "Basic2" then
-                                pcall(function()
-                                    TweenService
-                                        :Create(targetInfo, TweenInfo.new(1), {
-                                            Size = UDim2.fromScale(0.001 * nearest.Character.Humanoid.Health, 0.04),
-                                        })
-                                        :Play()
-                                    targetInfo.BackgroundColor3 = library.Color
-                                    targetInfo.BorderSizePixel = 0
-                                    targetInfo.AnchorPoint = Vector2.new(0.5, 0.5)
-                                    targetInfo.Position = UDim2.fromScale(0.6, 0.5)
-                                    targetInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
-                                    targetInfo.Text = "  " .. nearest.DisplayName
-                                    --targetInfo.TextScaled = true
-                                    targetInfo.TextXAlignment = Enum.TextXAlignment.Left
-                                end)
-                            end
-                        else
-                            pcall(function()
-                                targetInfo:Remove()
-                                targetInfo = nil
-                            end)
+                    if nearest ~= nil then
+                        local isWinning = function() return nearest.Character.Humanoid.Health > lplr.Character.Humanoid.Health end
+                        if targetInfo ~= nil then
+                            targetInfo = Instance.new('TextLabel', lplr.PlayerGui)
                         end
-                        task.wait()
-                    until not Aura.Enabled
+
+                        if TargetHudMode.Option == "Basic" then
+                            pcall(function()
+                                targetInfo.Size = UDim2.fromScale(.12, .05)
+                                targetInfo.BackgroundColor3 = Color3.fromRGB(25,25,25)
+                                targetInfo.BorderSizePixel = 0
+                                targetInfo.AnchorPoint = Vector2.new(0.5,0.5)
+                                targetInfo.Position = UDim2.fromScale(0.6,0.5)
+                                targetInfo.TextColor3 = Color3.fromRGB(255,255,255)
+                                targetInfo.Text = "  "..nearest.DisplayName.. " - IsWinning: ".. tostring(isWinning())
+                                targetInfo.TextXAlignment = Enum.TextXAlignment.Left
+
+                                local hp = Instance.new("Frame", targetInfo)
+                                hp.Position = UDim2.fromScale(0, .9)
+                                hp.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                                hp.BorderSizePixel = 0
+        
+                                TweenService:Create(hp,TweenInfo.new(1),{
+                                    Size = UDim2.fromScale(0.01 * nearest.Character.Humanoid.Health,0.1)
+                                }):Play()
+                            end)
+                        elseif TargetHudMode.Option == "Basic2" then
+                            pcall(function()
+                                TweenService:Create(targetInfo,TweenInfo.new(1),{
+                                    Size = UDim2.fromScale(0.001 * nearest.Character.Humanoid.Health,0.04)
+                                }):Play()
+                                targetInfo.BackgroundColor3 = library.Color
+                                targetInfo.BorderSizePixel = 0
+                                targetInfo.AnchorPoint = Vector2.new(0.5,0.5)
+                                targetInfo.Position = UDim2.fromScale(0.6,0.5)
+                                targetInfo.TextColor3 = Color3.fromRGB(255,255,255)
+                                targetInfo.Text = "  "..nearest.DisplayName
+                                --targetInfo.TextScaled = true
+                                targetInfo.TextXAlignment = Enum.TextXAlignment.Left
+                            end)	
+                        end
+                    else
+                        pcall(function()
+                            targetInfo:Remove()
+                            targetInfo = nil
+                        end)
+                    end
+                    task.wait()
                 end)
             end)
-	    else
-		    pcall(function()
-			    connections.Aura:Disconnect()
-		    end)
-	    end
+        else
+            pcall(function()
+                connections.Aura:Disconnect()
+            end)
+        end
     end
 })
 auraAnimation = Aura.NewPicker({
