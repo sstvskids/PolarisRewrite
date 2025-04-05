@@ -393,6 +393,117 @@ Fly = Motion.NewButton({
     end
 })
 
+table.insert(RBXScriptConnections, 'NoFall')
+NoFall = Misc.NewButton({
+	Name = "NoFall",
+	Function = function(callback)
+		if callback then
+			RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
+                if lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
+                    task.wait()
+                    lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -10, lplr.Character.PrimaryPart.Velocity.Z)
+                end
+			end)
+		end
+	end,
+})
+
+local ESPAssets: table = {
+	Sus = "http://www.roblox.com/asset/?id=9145833727",
+	Damc = "rbxassetid://16930990336",
+	Springs = "rbxassetid://16930908008",
+	Xylex = "rbxassetid://16930961099",
+	Alsploit = "http://www.roblox.com/asset/?id=12772788813",
+	Matrix = "http://www.roblox.com/asset/?id=1412150157",
+	Covid = "http://www.roblox.com/asset/?id=8518879821",
+	Space = "http://www.roblox.com/asset/?id=2609221356",
+	Windows = "http://www.roblox.com/asset/?id=472001646",
+	Trol = "http://www.roblox.com/asset/?id=6403436054",
+	Cat = "http://www.roblox.com/asset/?id=14841615129",
+	Furry = "http://www.roblox.com/asset/?id=14831068996",
+}
+local stylesofskybox: table = {}
+for i,v in ESPAssets do table.insert(stylesofskybox, i) end
+table.insert(RBXScriptConnections, 'ESP')
+ImageESP = Visuals.NewButton({
+	Name = "ImageESP",
+	Function = function(callback)
+		if callback then
+			task.spawn(function()
+                RBXScriptConnections['ESP'] = RunService.Heartbeat:Connect(function()
+					pcall(function()
+						for i,v in pairs(Players:GetPlayers()) do
+							if not (v.Character.PrimaryPart:FindFirstChild("nein")) then
+								if v ~= lplr and v.Team ~= lplr.Team and ImageESP.Enabled then
+									local e = Instance.new("BillboardGui", v.Character.PrimaryPart)
+
+									local image = Instance.new("ImageLabel",e)
+									image.Size = UDim2.fromScale(10,10)
+									image.Position = UDim2.fromScale(-3,-4)
+									image.Image = ESPAssets[ImageESPStyle.Option]
+									image.BackgroundTransparency = 1
+
+									e.Size = UDim2.fromScale(0.5,0.5)
+									e.AlwaysOnTop = true
+									e.Name = "nein"
+								end
+							end
+						end
+					end)
+					task.wait()
+				end)
+			end)
+		else
+            task.spawn(function()
+                RBXScriptConnections['ESP']:Disconnect()
+            end)
+			pcall(function()
+				for i,v in pairs(Players:GetPlayers()) do
+					if (v.Character.PrimaryPart:FindFirstChild("nein")) then
+						if v ~= lplr then
+							v.Character.PrimaryPart:FindFirstChild("nein"):Destroy()
+						end
+					end
+				end
+			end)
+		end
+	end,
+})
+ImageESPStyle = ImageESP.NewPicker({
+	Name = "Style",
+	Options = stylesofskybox
+})
+
+BlockingAnimation = Visuals.NewButton({
+	Name = "BlockingAnimation",
+	Function = function(callback)
+		if callback then
+			lplr:GetMouse().Button2Down:Connect(function()
+				viewmodel.C0 = oldweld * CFrame.new(0.7, -0.4, 0.1) * CFrame.Angles(math.rad(-65), math.rad(55), math.rad(-50))
+			end)
+			lplr:GetMouse().Button2Up:Connect(function()
+				viewmodel.C0 = oldweld
+			end)
+		end
+	end,
+})
+
+local oldFOV = wroskapce.CurrentCamera.FieldOfView
+table.insert(RBXScriptConnections, 'Camera')
+Camera = Visuals.NewButton({
+	Name = "FOVChanger",
+	Function = function(callback)
+		if callback then
+			RBXScriptConnections['Camera'] = RunService.Heartbeat:Connect(function()
+				workspace.CurrentCamera.FieldOfView = 120
+			end)
+		else
+			RBXScriptConnections['Camera']:Disconnect()
+			workspace.CurrentCamera.FieldOfView = oldFOV
+		end
+	end,
+})
+
 Uninject = Misc.NewButton({
 	Name = "Uninject",
 	Function = function(callback)
