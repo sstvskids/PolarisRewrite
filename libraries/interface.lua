@@ -15,7 +15,9 @@ local lplr = Players.LocalPlayer
 local PlayerGui = lplr.PlayerGui
 
 local cfgpath: string = "polaris/configs/"..game.PlaceId..".json"
+local cansave = true
 library.saveConfig = function()
+	if not cansave then return nil end
 	local encrypt = HttpService:JSONEncode(config)
 	if isfile(cfgpath) then
 		delfile(cfgpath)
@@ -34,10 +36,10 @@ library.KeyBind = Enum.KeyCode.RightShift
 library.Modules = {}
 library.Modules.Rotations = false
 
-local ScreenGui = Instance.new("ScreenGui", PlayerGui)
-ScreenGui.ResetOnSpawn = false
+library.ScreenGui = Instance.new("ScreenGui", PlayerGui)
+library.ScreenGui.ResetOnSpawn = false
 
-local cmdBar = Instance.new("TextBox",ScreenGui)
+local cmdBar = Instance.new("TextBox",library.ScreenGui)
 cmdBar.Position = UDim2.fromScale(0,0)
 cmdBar.BorderSizePixel = 0
 cmdBar.Size = UDim2.fromScale(1,0.05)
@@ -53,7 +55,7 @@ UserInputService.InputBegan:Connect(function(key,gpe)
 	end
 end)
 
-local arrayFrame = Instance.new("Frame",ScreenGui)
+local arrayFrame = Instance.new("Frame",library.ScreenGui)
 arrayFrame.Size = UDim2.fromScale(0.3,1)
 arrayFrame.Position = UDim2.fromScale(0.7,0)
 arrayFrame.BackgroundTransparency = 1
@@ -63,7 +65,7 @@ sort.SortOrder = Enum.SortOrder.LayoutOrder
 local arrayStuff = {}
 local id = "http://www.roblox.com/asset/?id=7498352732"
 
-local arrayListFrame = Instance.new("Frame",ScreenGui)
+local arrayListFrame = Instance.new("Frame",library.ScreenGui)
 arrayListFrame.Size = UDim2.fromScale(0.2,1)
 arrayListFrame.Position = UDim2.fromScale(0.795,0.03)
 arrayListFrame.BackgroundTransparency = 1
@@ -248,7 +250,7 @@ function NewTween(item, totime, toChange)
 	TweenService:Create(item, totime, toChange):Play()
 end
 
-local NOTIFY_FRAME = Instance.new("Frame", ScreenGui)
+local NOTIFY_FRAME = Instance.new("Frame", library.ScreenGui)
 NOTIFY_FRAME.Position = UDim2.fromScale(0.8, 0.5)
 NOTIFY_FRAME.Size = UDim2.fromScale(0.19, 0.4)
 NOTIFY_FRAME.BackgroundTransparency = 1
@@ -285,7 +287,7 @@ end
 
 library.NewWindow = function(name)
 
-	local textlabel = Instance.new("TextLabel", ScreenGui)
+	local textlabel = Instance.new("TextLabel", library.ScreenGui)
 	textlabel.Position = UDim2.fromScale(0.1 + (library.WindowCount / 8), 0.1)
 	textlabel.Size = UDim2.fromScale(0.1, 0.0425)
 	textlabel.Text = name
@@ -512,6 +514,23 @@ library.NewWindow = function(name)
 		return lib2
 	end
 	return lib
+end
+
+function library:uninject()
+	library.saveConfig()
+	cansave = false
+
+	for i,v in library.modules do
+		if config.Buttons[i].Enabled then
+			v:ToggleButton()
+		end
+		config.Keybinds[i] = nil
+	end
+
+	library.ScreenGui:Destroy()
+	table.clear(arrayItems)
+	table.clear(library.Modules)
+	table.clear(cmdSystem.cmds)
 end
 
 return library

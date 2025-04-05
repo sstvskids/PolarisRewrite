@@ -46,6 +46,18 @@ table.insert(connections, function(char)
 	inventory = workspace[lplr.Name].InventoryFolder.Value
 end)
 
+local lastHPHurt = 100
+task.spawn(function()
+	repeat task.wait()
+		if (lplr.Character.Humanoid.Health < lastHPHurt) then
+			hurttime = 0
+		end
+
+		lastHPHurt = lplr.Character.Humanoid.Health
+		hurttime += 1
+	until false
+end)
+
 Combat = library.NewWindow('Combat')
 Player = library.NewWindow('Player')
 Motion = library.NewWindow('Motion')
@@ -195,13 +207,13 @@ local funAnimations: table = {
 
 local animAuraTab: table = {}
 for i,v in pairs(auraAnimations) do table.insert(animAuraTab, i) end
-local targetInfo = Instance.new("TextLabel", lplr.PlayerGui)
-table.insert(RBXScriptConnections, Aura)
+local targetInfo = Instance.new("TextLabel", library.ScreenGui)
+table.insert(RBXScriptConnections, 'Aura')
 Aura = Combat.NewButton({
     Name = "Aura",
     Function = function(calling)
         if calling then
-            RBXScriptConnections.Aura = RunService.Heartbeat:Connect(function()
+            RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil then
                     local nearestCharacter = nearest.Character
@@ -259,7 +271,7 @@ Aura = Combat.NewButton({
                     if nearest ~= nil then
                         local isWinning = function() return nearest.Character.Humanoid.Health > lplr.Character.Humanoid.Health end
                         if targetInfo ~= nil then
-                            targetInfo = Instance.new('TextLabel', lplr.PlayerGui)
+                            targetInfo = Instance.new('TextLabel', library.ScreenGui)
                         end
 
                         if TargetHudMode.Option == "Basic" then
@@ -308,7 +320,7 @@ Aura = Combat.NewButton({
             end)
         else
             pcall(function()
-                connections.Aura:Disconnect()
+                RBXScriptConnections['Aura']:Disconnect()
             end)
         end
     end
@@ -328,3 +340,70 @@ TargetHudMode = Aura.NewPicker({
 table.insert(connections, function(char)
 	viewmodel = workspace.Camera.Viewmodel.RightHand.RightWrist
 end)
+
+table.insert(RBXScriptConnections, 'Speed')
+local ticks = 0
+Speed = Motion.NewButton({
+    Name = "Speed",
+    Function = function(calling)
+        if calling then
+            task.spawn(function()
+                RBXScriptConnections['Speed'] = RunService.Heartbeat:Connect(function()
+                    ticks += 1
+                    local dir = lplr.Character.Humanoid.MoveDirection
+                    local velo = lplr.Character.PrimaryPart.Velocity
+                    local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.12 or 0.017
+
+                    if DamageBoost.Enabled then
+                        if (HurtTime <= 50) then
+                            lplr.Character.PrimaryPart.CFrame += (0.25 * dir)
+                        end
+                    end
+
+                    lplr.Character.PrimaryPart.CFrame += (speed * dir)
+                end)
+            end)
+        else
+            pcall(function()
+                RBXScriptConnections['Speed']:Disconnect()
+            end)
+        end
+    end
+})
+DamageBoost = Speed.NewToggle({
+	Name = "DamageBoost"
+})
+
+table.insert(RBXScriptConnections, 'Fly')
+Fly = Motion.NewButton({
+    Name = "Fly",
+    Keybind = Enum.KeyCode.R,
+    Function = function(calling)
+        if calling then
+            RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
+                local velo = lplr.Character.PrimaryPart.Velocity
+                lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 2.03, velo.Z)
+
+                if UserInputService:IsKeyDown("Space") then
+					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 44, velo.Z)
+				end
+				if UserInputService:IsKeyDown("LeftShift") then
+					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, -44, velo.Z)
+				end
+			end)
+        else
+            pcall(function()
+                RBXScriptConnections['Fly']:Disconnect()
+            end)
+        end
+    end
+})
+
+Uninject = Misc.NewButton({
+	Name = "Uninject",
+	Function = function(callback)
+		if callback then
+            library:Uninject()
+		end
+	end,
+})
