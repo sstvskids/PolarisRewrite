@@ -352,13 +352,7 @@ Speed = Motion.NewButton({
                     ticks += 1
                     local dir = lplr.Character.Humanoid.MoveDirection
                     local velo = lplr.Character.PrimaryPart.Velocity
-                    local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.12 or 0.017
-
-                    if DamageBoost.Enabled then
-                        if (HurtTime <= 50) then
-                            lplr.Character.PrimaryPart.CFrame += (0.25 * dir)
-                        end
-                    end
+                    local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.021
 
                     lplr.Character.PrimaryPart.CFrame += (speed * dir)
                 end)
@@ -403,7 +397,7 @@ Uninject = Misc.NewButton({
 	Name = "Uninject",
 	Function = function(callback)
 		if callback then
-            library:Uninject()
+            library:uninject()
 		end
 	end,
 })
