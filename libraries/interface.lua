@@ -520,12 +520,13 @@ function library:uninject()
 	library.saveConfig()
 	cansave = false
 
-	for i,v in pairs(library.Modules) do
-		if config.Buttons[i].Enabled then
-			v:ToggleButton()
-		end
-		config.Keybinds[i] = nil
-	end
+    for i,v in pairs(library.Modules) do
+        if config.Buttons[i] and config.Buttons[i].Enabled then
+            arraylist.Remove(i)
+            config.Buttons[i].Enabled = false
+        end
+        config.Keybinds[i] = nil
+    end
 
 	library.ScreenGui:Destroy()
 	table.clear(arrayItems)
