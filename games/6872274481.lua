@@ -85,6 +85,7 @@ end
 local remotes: table = {
     SetInvItem = getRemote("SetInvItem"),
     SwordHit = getRemote("SwordHit"),
+	Chest = getRemote("Inventory/ChestGetItem")
 }
 
 local function hasItem(item)
@@ -125,6 +126,25 @@ local function spoofHand(item)
 		remotes.SetInvItem:InvokeServer({
 			["hand"] = inventory:WaitForChild(item)
 		})
+	end
+end
+
+local function placeBlock(pos, block)
+	blockenginemanaged.PlaceBlock:InvokeServer({
+		['blockType'] = block,
+		['position'] = Vector3.new(pos.X / 3,pos.Y / 3,pos.Z / 3),
+		['blockData'] = 0
+	})
+end
+
+local function getWool()
+	for i,v in pairs(inventory:GetChildren()) do if v.Name:lower():find("wool") then return v.Name end end
+end
+
+local chests: table = {}
+for i,v in pairs(workspace:GetChildren()) do
+	if v.Name == 'chest' then
+		table.insert(chests, v)
 	end
 end
 
@@ -502,6 +522,119 @@ Camera = Visuals.NewButton({
 			workspace.CurrentCamera.FieldOfView = oldFOV
 		end
 	end,
+})
+
+table.insert(RBXScriptConnections, 'Stealer')
+Stealer = Player.NewButton({
+	Name = "Stealer",
+	Function = function(callback)
+		if callback then
+			RBXScriptConnections['Stealer'] = RunService.Heartbeat:Connect(function()
+				task.spawn(function()
+					for i,v in pairs(chests) do
+						local Mag = (v.Position - lplr.Character.PrimaryPart.Position).Magnitude
+						if Mag <= 30 then
+							for _, item in pairs(v.ChestFolderValue.Value:GetChildren()) do
+								if item:IsA("Accessory") then
+									remotes.Chest:InvokeServer(v.ChestFolderValue.Value, item)
+								end
+							end
+						end
+					end
+				end)
+			end)
+		else
+			RBXScriptConnections['Stealer']:Disconnect()
+		end
+	end,
+})
+
+-- lazy to rewrite this lol, ill do later
+LongJump = Motion.NewButton({
+	Name = "LongJump",
+	Keybind = Enum.KeyCode.J,
+	Function = function(callback)
+		if callback then
+			if LongJumpMethod.Option == "Boost" then
+				TweenService:Create(lplr.Character.PrimaryPart, TweenInfo.new(2.2), {
+					CFrame = lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 50 + Vector3.new(0, 5, 0)
+				}):Play()
+				task.delay(0.8, function()
+					LongJump.ToggleButton(false)
+				end)
+			elseif LongJumpMethod.Option == "Gravity" then
+				workspace.Gravity = 5
+				task.delay(0.01, function()
+					lplr.Character.Humanoid:ChangeState(3)
+				end)
+			elseif LongJumpMethod.Option == "Yuzi" then
+				ReplicatedStorage:FindFirstChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events").useAbility:FireServer("dash")
+				workspace.Gravity = 0
+				if utils.onGround() then
+					for i = 1, 120 do
+						lplr.Character.PrimaryPart.CFrame += lplr.Character.PrimaryPart.CFrame.LookVector * 2
+						task.wait()
+					end
+					workspace.Gravity = 196.2
+				end
+			end
+		else
+			workspace.Gravity = 196.2
+			task.delay(0.1, function()
+				lplr.Character.PrimaryPart.Velocity = Vector3.zero
+			end)
+		end
+	end,
+})
+LongJumpMethod = LongJump.NewPicker({
+	Name = "Mode",
+	Options = {"Boost", "Gravity", "Yuzi"}
+})
+
+table.insert(RBXScriptConnections, 'Scaffold')
+Scaffold = Misc.NewButton({
+	["Name"] = "Scaffold",
+	["Function"] = function(callback)
+		if callback then
+			RBXScriptConnections['Scaffold'] = RunService.Heartbeat:Connect(function()
+				local block = getWool()
+				if game.UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+					local velo = lplr.Character.PrimaryPart.Velocity
+					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X,25,velo.Z)
+					for i = 1, 4 do
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 1) - Vector3.new(0,i + 4.5 * 1.4,0),block)
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector) - Vector3.new(0,i + 4.5 * 1.1,0),block)
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector / 1.1) - Vector3.new(0,i + 4.5 / 1.1,0),block)
+						task.wait()
+					end
+				end
+				if ScaffoldMode1.Option == "Normal" then
+					if not Scaffold.Enabled then return end
+					placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 0.5) - Vector3.new(0,4.5,0),block)
+				end
+				if ScaffoldMode1.Option == "Expand" then
+					for i = 1, 8 do
+						if not Scaffold.Enabled then return end
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
+						task.wait(0.01)
+					end
+				end
+				if ScaffoldMode1.Option == "Expand2" then
+					for i = 1, 16 do
+						if not Scaffold.Enabled then return end
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
+						task.wait(0.01)
+					end
+				end
+			end)
+		else
+			RBXScriptConnections['Scaffold']:Disconnect()
+		end
+	end,
+})
+ScaffoldMode1 = Scaffold.NewPicker({
+	Name = "Place Mode",
+	Options = {"Normal", "Expand", "Expand2"}
 })
 
 Uninject = Misc.NewButton({
