@@ -1,4 +1,4 @@
-local FilePath = "polaris/games/"..game.PlaceId..".lua"
+local FilePath: string = "polaris/games/"..game.PlaceId..".lua"
 if isfile(FilePath) then
     return loadfile(FilePath)()
 else
