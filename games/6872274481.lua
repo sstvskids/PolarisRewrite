@@ -352,7 +352,7 @@ Speed = Motion.NewButton({
                     ticks += 1
                     local dir = lplr.Character.Humanoid.MoveDirection
                     local velo = lplr.Character.PrimaryPart.Velocity
-                    local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.021
+                    local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.18 or 0.021
 
                     lplr.Character.PrimaryPart.CFrame += (speed * dir)
                 end)

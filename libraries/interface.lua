@@ -520,7 +520,7 @@ function library:uninject()
 	library.saveConfig()
 	cansave = false
 
-	for i,v in library.modules do
+	for i,v in library.Modules do
 		if config.Buttons[i].Enabled then
 			v:ToggleButton()
 		end
