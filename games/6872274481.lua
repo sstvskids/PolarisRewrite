@@ -262,10 +262,11 @@ Aura = Combat.NewButton({
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil then
                     local weapon = getBestWeapon()
+					local entity, plrpos, pred
 					if nearest:IsA('Player') then
-						local entity, plrpos, pred = nearest.Character, nearest.Character.PrimaryPart.Position, nearest.Character.Humanoid.MoveDirection
+						entity, plrpos, pred = nearest.Character, nearest.Character.PrimaryPart.Position, nearest.Character.Humanoid.MoveDirection
 					else
-						local entity, plrpos, pred = nearest, nearest.PrimaryPart.Position, nearest.Humanoid.MoveDirection
+						entity, plrpos, pred = nearest, nearest.PrimaryPart.Position, nearest.Humanoid.MoveDirection
 					end
                     spoofHand(weapon.Name)
 
