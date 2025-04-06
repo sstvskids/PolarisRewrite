@@ -602,24 +602,22 @@ Scaffold = Misc.NewButton({
 					local velo = lplr.Character.PrimaryPart.Velocity
 					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X,25,velo.Z)
 					for i = 1, 4 do
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 1) - Vector3.new(0,i + 4.5 * 1.4,0),block)
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector) - Vector3.new(0,i + 4.5 * 1.1,0),block)
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector / 1.1) - Vector3.new(0,i + 4.5 / 1.1,0),block)
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 1) - Vector3.new(0,i + 4.5 * 1.4,0), block)
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector) - Vector3.new(0,i + 4.5 * 1.1,0), block)
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector / 1.1) - Vector3.new(0,i + 4.5 / 1.1,0), block)
 						task.wait()
 					end
 				end
 				if ScaffoldMode1.Option == "Normal" then
 					if not Scaffold.Enabled then return end
 					placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 0.5) - Vector3.new(0,4.5,0),block)
-				end
-				if ScaffoldMode1.Option == "Expand" then
+				elseif ScaffoldMode1.Option == "Expand" then
 					for i = 1, 8 do
 						if not Scaffold.Enabled then return end
 						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
 						task.wait(0.01)
 					end
-				end
-				if ScaffoldMode1.Option == "Expand2" then
+				elseif ScaffoldMode1.Option == "Expand2" then
 					for i = 1, 16 do
 						if not Scaffold.Enabled then return end
 						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
@@ -637,6 +635,7 @@ ScaffoldMode1 = Scaffold.NewPicker({
 	Options = {"Normal", "Expand", "Expand2"}
 })
 
+-- uninject FULLY uninjects Polaris this time
 Uninject = Misc.NewButton({
 	Name = "Uninject",
 	Function = function(callback)

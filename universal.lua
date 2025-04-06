@@ -3,6 +3,7 @@ if not isfolder('polaris') then return nil end
 local library: table = loadfile('polaris/libraries/interface.lua')()
 local utils: table = loadfile('polaris/libraries/utils.lua')()
 local connections: table = {}
+local RBXScriptConnections: table = {}
 
 local cloneref = cloneref or function(v) return v end
 local Players: Players = cloneref(game:GetService('Players'))

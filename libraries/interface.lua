@@ -39,7 +39,7 @@ library.Modules.Rotations = false
 library.ScreenGui = Instance.new("ScreenGui", PlayerGui)
 library.ScreenGui.ResetOnSpawn = false
 
-local cmdBar = Instance.new("TextBox",library.ScreenGui)
+local cmdBar = Instance.new("TextBox", library.ScreenGui)
 cmdBar.Position = UDim2.fromScale(0,0)
 cmdBar.BorderSizePixel = 0
 cmdBar.Size = UDim2.fromScale(1,0.05)
@@ -121,7 +121,7 @@ local arraylist = {
 		glow.Position = UDim2.fromScale(-1,-1.5)
 		glow.ZIndex = -10
 
-		local size = UDim2.new(0.01,game.TextService:GetTextSize(o,22,Enum.Font.SourceSans,Vector2.new(0,0)).X,0.033,0)
+		local size = UDim2.new(0.01, game.TextService:GetTextSize(o, 22, Enum.Font.SourceSans, Vector2.new(0,0)).X + 2, 0.033,0)
 
 		if o == "" then
 			size = UDim2.fromScale(0,0)
