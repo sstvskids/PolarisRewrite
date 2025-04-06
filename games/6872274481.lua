@@ -118,6 +118,31 @@ local function getNearestPlayer(range)
 			end
 		end)
 	end
+	for i,v in pairs(CollectionService:GetTagged('Monster')) do
+		pcall(function()
+			if v.Team == lplr.Team then return end
+			if v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+				nearest = v
+				nearestDist = (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+			end
+		end)
+	end
+	for i,v in pairs(CollectionService:GetTagged('DiamondGuardian')) do
+		pcall(function()
+			if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+				nearest = v
+				nearestDist = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+			end
+		end)
+	end
+	for i,v in pairs(CollectionService:GetTagged('GolemBoss')) do
+		pcall(function()
+			if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+				nearest = v
+				nearestDist = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+			end
+		end)
+	end
 	return nearest
 end
 
@@ -237,6 +262,11 @@ Aura = Combat.NewButton({
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil then
                     local weapon = getBestWeapon()
+					if nearest:IsA('Player') then
+						local entity, plrpos, pred = nearest.Character, nearest.Character.PrimaryPart.Position, nearest.Character.Humanoid.MoveDirection
+					else
+						local entity, plrpos, pred = nearest, nearest.PrimaryPart.Position, nearest.Humanoid.MoveDirection
+					end
                     spoofHand(weapon.Name)
 
                     task.spawn(function()
@@ -244,14 +274,14 @@ Aura = Combat.NewButton({
                             chargedAttack = {
                                 chargeRatio = 0
                             },
-                            entityInstance = nearest.Character,
+                            entityInstance = entity,
                             validate = {
                                 raycast = {
-                                    	cameraPosition = nearest.Character.PrimaryPart.Position,
-                                        cursorDirection = (nearest.Character.PrimaryPart.Position - lplr.Character.PrimaryPart.Position).Unit
+                                    	cameraPosition = plrpos,
+                                        cursorDirection = (plrpos - lplr.Character.PrimaryPart.Position).Unit
                                     },
                                     targetPosition = {
-                                        value = nearest.Character.PrimaryPart.Position + nearest.Character.Humanoid.MoveDirection
+                                        value = plrpos + pred
                                     },
                                     selfPosition = {
                                         value = lplr.Character.PrimaryPart.Position

@@ -503,9 +503,11 @@ library.NewWindow = function(name)
 		UserInputService.InputBegan:Connect(function(k, g)
 			if g then return end
 			if k == nil then return end
-			if k.KeyCode == library.Modules[Table.Name].Keybind and k.KeyCode ~= Enum.KeyCode.Unknown then
-				lib2.ToggleButton()
-			end
+			pcall(function()
+				if k.KeyCode == library.Modules[Table.Name].Keybind and k.KeyCode ~= Enum.KeyCode.Unknown then
+					lib2.ToggleButton()
+				end
+			end)
 		end)
 
 		if config.Buttons[Table.Name].Enabled then
