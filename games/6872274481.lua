@@ -451,11 +451,15 @@ NoFall = Misc.NewButton({
 	Name = "NoFall",
 	Function = function(callback)
 		if callback then
-			RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
+			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
                 if lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
                     task.wait()
                     lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -10, lplr.Character.PrimaryPart.Velocity.Z)
                 end
+			end)
+		else
+			pcall(function()
+				RBXScriptConnections['NoFall']:Disconnect()
 			end)
 		end
 	end,
