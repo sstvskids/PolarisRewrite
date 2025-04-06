@@ -47,4 +47,4 @@ Misc = library.NewWindow('Misc')
 Exploit = library.NewWindow('Exploit')
 Legit = library.NewWindow('Legit')
 
-return game:GetService('Players').LocalPlayer:Kick('universal.lua == not finished')
+return lplr:Kick('universal.lua == not finished (roblox bedwars is supported)')
