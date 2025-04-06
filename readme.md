@@ -1,6 +1,6 @@
 <div align="center">
   <h1>🌟 Polaris</h1>
-  <p>A powerful universal script designed specifically for Roblox Bedwars</p>
+  <p>A overpowered script designed specifically for **any game**.</p>
 </div>
 
 ## ✨ Features
