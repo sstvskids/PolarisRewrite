@@ -236,9 +236,6 @@ Aura = Combat.NewButton({
             RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil then
-                    local nearestCharacter = nearest.Character
-                    local nearestPrimaryPartPosition = nearestCharacter.PrimaryPart.Position
-                    local selfPrimaryPartPosition = lplr.Character.PrimaryPart.Position
                     local weapon = getBestWeapon()
                     spoofHand(weapon.Name)
 
@@ -247,17 +244,17 @@ Aura = Combat.NewButton({
                             chargedAttack = {
                                 chargeRatio = 0
                             },
-                            entityInstance = nearestCharacter,
+                            entityInstance = nearest.Character,
                             validate = {
                                 raycast = {
-                                    cameraPosition = workspace.CurrentCamera,
-                                        cursorDirection = CFrame.LookVector
+                                    	cameraPosition = nearest.Character.PrimaryPart.Position,
+                                        cursorDirection = (nearest.Character.PrimaryPart.Position - lplr.Character.PrimaryPart.Position).Unit
                                     },
                                     targetPosition = {
-                                        value = nearestPrimaryPartPosition
+                                        value = nearest.Character.PrimaryPart.Position + nearest.Character.PrimaryPart.MoveDirection
                                     },
                                     selfPosition = {
-                                        value = selfPrimaryPartPosition
+                                        value = lplr.Character.PrimaryPart.Position
                                     },
                                 },
                             weapon = weapon
