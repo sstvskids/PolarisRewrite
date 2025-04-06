@@ -1,19 +1,21 @@
-# Polaris
-Polaris is a universal script that supports Roblox Bedwars.
+<div align="center">
+  <h1>🌟 Polaris</h1>
+  <p>A powerful universal script designed specifically for Roblox Bedwars</p>
+</div>
 
-# Features
-- No Fall (Immune to fall damage)
-- Aura (Kill everyone around you)
-- Speed (Boost your speed!)
-- Flight (Fly across the map)
-- ESP (See players through walls)
-- Scaffold (Bridge across the whole map without a single click)
+## ✨ Features
+- 🛡️ **No Fall** - Complete immunity to fall damage
+- ⚔️ **Aura** - Automatic killing of players
+- 🏃 **Speed** - Enhanced movement capabilities
+- 🦅 **Flight** - Seamless aerial navigation
+- 👁️ **ESP** - Advanced player visualization
+- 🌉 **Scaffold** - Effortless bridge construction
 
-# Usage
-Run the script provided down below in any executor of your choice.
+## 📱 Device Compatability
+- 💻 **PC** - Works on Windows and MacOS laptops
+
+## 🚀 Getting Started
+To get started, simply execute the following script in your executor:
 ```lua
 loadstring(game:HttpGet('https://raw.githubusercontent.com/sstvskids/PolarisRewrite/main/installer.lua'))()
 ```
-
-# Executors Supported
-Any executor that is level 3.
