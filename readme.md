@@ -1,6 +1,6 @@
 <div align="center">
   <h1>🌟 Polaris</h1>
-  <p>A overpowered script designed specifically for **any game**.</p>
+  <p>A overpowered script designed specifically for <strong>any game</strong>.</p>
 </div>
 
 ## ✨ Features
