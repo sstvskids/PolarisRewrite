@@ -50,11 +50,11 @@ local lastHPHurt = 100
 task.spawn(function()
 	repeat task.wait()
 		if (lplr.Character.Humanoid.Health < lastHPHurt) then
-			hurttime = 0
+			HurtTime = 0
 		end
 
 		lastHPHurt = lplr.Character.Humanoid.Health
-		hurttime += 1
+		HurtTime += 1
 	until false
 end)
 
@@ -373,6 +373,11 @@ Speed = Motion.NewButton({
                     local dir = lplr.Character.Humanoid.MoveDirection
                     local velo = lplr.Character.PrimaryPart.Velocity
                     local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.18 or 0.021
+					if DamageBoost.Enabled then
+						if (HurtTime <= 50) then
+							lplr.Character.PrimaryPart.CFrame += (0.25 * dir)
+						end
+					end
 
                     lplr.Character.PrimaryPart.CFrame += (speed * dir)
                 end)
@@ -549,7 +554,6 @@ Stealer = Player.NewButton({
 	end,
 })
 
--- lazy to rewrite this lol, ill do later
 LongJump = Motion.NewButton({
 	Name = "LongJump",
 	Keybind = Enum.KeyCode.J,
@@ -633,6 +637,25 @@ Scaffold = Misc.NewButton({
 ScaffoldMode1 = Scaffold.NewPicker({
 	Name = "Place Mode",
 	Options = {"Normal", "Expand", "Expand2"}
+})
+
+table.insert(RBXScriptConnections, 'AirJump')
+AirJump = Motion.NewButton({
+	Name = "AirJump",
+	Keybind = Enum.KeyCode.K,
+	Function = function(callback)
+		if callback then
+			RBXScriptConnections['AirJump'] = UserInputService.InputBegan:Connect(function(k,g)
+				if g then return end
+				if k == nil then return end
+				if k.KeyCode == Enum.KeyCode.Space then
+					lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+				end
+			end)
+		else
+			RBXScriptConnections['AirJump']:Disconnect()
+		end
+	end,
 })
 
 -- uninject FULLY uninjects Polaris this time
