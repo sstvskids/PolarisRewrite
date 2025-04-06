@@ -251,7 +251,7 @@ Aura = Combat.NewButton({
                                         cursorDirection = (nearest.Character.PrimaryPart.Position - lplr.Character.PrimaryPart.Position).Unit
                                     },
                                     targetPosition = {
-                                        value = nearest.Character.PrimaryPart.Position + nearest.Character.PrimaryPart.MoveDirection
+                                        value = nearest.Character.PrimaryPart.Position + nearest.Character.Humanoid.MoveDirection
                                     },
                                     selfPosition = {
                                         value = lplr.Character.PrimaryPart.Position
