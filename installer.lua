@@ -1,12 +1,11 @@
 local cloneref = cloneref or function(v) return v end
 local HttpService: HttpService = cloneref(game:GetService("HttpService"))
-local Folders: table = {'', 'libraries', 'games'}
 for _,v in {'polaris', 'polaris/libraries', 'polaris/games', 'polaris/configs'} do
     if not isfolder(v) then makefolder(v) end
 end
 
 local suc, res = pcall(function()
-    for _, v in Folders do
+    for _, v in {'', 'libraries', 'games'} do
         local url: string = game:HttpGet('https://api.github.com/repos/sstvskids/PolarisRewrite/contents/'..v)
         local jsonURL: table = HttpService:JSONDecode(url)
         for _, i in jsonURL do
