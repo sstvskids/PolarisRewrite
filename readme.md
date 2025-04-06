@@ -2,10 +2,12 @@
 Polaris is a universal script that supports Roblox Bedwars.
 
 # Features
-- No Fall
-- Aura
-- Speed
-- Flight
+- No Fall (Immune to fall damage)
+- Aura (Kill everyone around you)
+- Speed (Boost your speed!)
+- Flight (Fly across the map)
+- ESP (See players through walls)
+- Scaffold (Bridge across the whole map without a single click)
 
 # Usage
 Run the script provided down below in any executor of your choice.
