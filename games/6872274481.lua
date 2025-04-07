@@ -21,7 +21,11 @@ local user: string = lplr.Name
 local HurtTime: string = 0
 local release: string = 'rewrite'
 
-repeat task.wait() until game:IsLoaded() and lplr.Character
+isAlive = function(plr: string)
+	return plr.Character.Humanoid.Health > 0
+end
+
+repeat task.wait() until game:IsLoaded() and isAlive(lplr)
 if utils.getDevice == 'mobile' then return lplr:Kick('no mobile support :) - stav') end
 
 if not isfile("polaris/configs/"..game.PlaceId..".json") then library.saveConfig() end
@@ -260,7 +264,7 @@ Aura = Combat.NewButton({
         if calling then
             RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestPlayer(18)
-                if nearest ~= nil then
+                if nearest ~= nil and isAlive(lplr) then
                     local weapon = getBestWeapon()
 					local entity, plrpos, pred
 					if nearest:IsA('Player') then
@@ -294,32 +298,30 @@ Aura = Combat.NewButton({
                 end
 
                 task.spawn(function()
-                    if nearest ~= nil then
+                    if nearest ~= nil and isAlive(lplr) and CustomAnimation.Enabled then
                         pcall(function()
                             local animation = auraAnimations[auraAnimation.Option]
                             local allTime = 0
                             task.spawn(function()
-                                if CustomAnimation.Enabled then
-                                    animRunning = true
-                                    for i,v in pairs(animation) do allTime += v.Timer end
-                                    for i,v in pairs(animation) do
-                                        local tween = TweenService:Create(viewmodel, TweenInfo.new(v.Timer), {C0 = oldweld * v.CFrame})
-                                        tween:Play()
-                                        task.wait(v.Timer - 0)
-                                    end
-                                    animRunning = false
-                                    game.TweenService:Create(viewmodel, TweenInfo.new(1), {C0 = oldweld}):Play()
+                                animRunning = true
+                                for i,v in pairs(animation) do allTime += v.Timer end
+                                for i,v in pairs(animation) do
+                                    local tween = TweenService:Create(viewmodel, TweenInfo.new(v.Timer), {C0 = oldweld * v.CFrame})
+                                    tween:Play()
+                                    task.wait(v.Timer - 0)
                                 end
+                                animRunning = false
+                                game.TweenService:Create(viewmodel, TweenInfo.new(1), {C0 = oldweld}):Play()
                             end)
                         end)
                     end
                 end)
 
                 task.spawn(function()
-                    if nearest ~= nil then
+                    if nearest ~= nil and isAlive(lplr) then
                         local isWinning = function() return nearest.Character.Humanoid.Health > lplr.Character.Humanoid.Health end
                         if targetInfo ~= nil then
-                            targetInfo = Instance.new('TextLabel', library.ScreenGui)
+                            targetInfo = Instance.new('TextLabel', lplr.PlayerGui)
                         end
 
                         if TargetHudMode.Option == "Basic" then
@@ -363,7 +365,6 @@ Aura = Combat.NewButton({
                             targetInfo = nil
                         end)
                     end
-                    task.wait()
                 end)
             end)
         else
@@ -397,17 +398,19 @@ Speed = Motion.NewButton({
         if calling then
             task.spawn(function()
                 RBXScriptConnections['Speed'] = RunService.Heartbeat:Connect(function()
-                    ticks += 1
-                    local dir = lplr.Character.Humanoid.MoveDirection
-                    local velo = lplr.Character.PrimaryPart.Velocity
-                    local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.18 or 0.021
-					if DamageBoost.Enabled then
-						if (HurtTime <= 50) then
-							lplr.Character.PrimaryPart.CFrame += (0.25 * dir)
+					if isAlive(lplr) then
+						ticks += 1
+						local dir = lplr.Character.Humanoid.MoveDirection
+						local velo = lplr.Character.PrimaryPart.Velocity
+						local speed = lplr.Character:GetAttribute("SpeedBoost") and 0.18 or 0.021
+						if DamageBoost.Enabled then
+							if (HurtTime <= 50) then
+								lplr.Character.PrimaryPart.CFrame += (0.25 * dir)
+							end
 						end
-					end
 
-                    lplr.Character.PrimaryPart.CFrame += (speed * dir)
+						lplr.Character.PrimaryPart.CFrame += (speed * dir)
+					end
                 end)
             end)
         else
@@ -428,14 +431,16 @@ Fly = Motion.NewButton({
     Function = function(calling)
         if calling then
             RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
-                local velo = lplr.Character.PrimaryPart.Velocity
-                lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 2.03, velo.Z)
+				if isAlive(lplr) then
+					local velo = lplr.Character.PrimaryPart.Velocity
+					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 2.03, velo.Z)
 
-                if UserInputService:IsKeyDown("Space") then
-					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 44, velo.Z)
-				end
-				if UserInputService:IsKeyDown("LeftShift") then
-					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, -44, velo.Z)
+					if UserInputService:IsKeyDown("Space") then
+						lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 44, velo.Z)
+					end
+					if UserInputService:IsKeyDown("LeftShift") then
+						lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, -44, velo.Z)
+					end
 				end
 			end)
         else
@@ -452,7 +457,7 @@ NoFall = Misc.NewButton({
 	Function = function(callback)
 		if callback then
 			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
-                if lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
+                if isAlive(lplr) and lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
                     task.wait()
                     lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -10, lplr.Character.PrimaryPart.Velocity.Z)
                 end
@@ -490,7 +495,7 @@ ImageESP = Visuals.NewButton({
                 RBXScriptConnections['ESP'] = RunService.Heartbeat:Connect(function()
 					pcall(function()
 						for i,v in pairs(Players:GetPlayers()) do
-							if not (v.Character.PrimaryPart:FindFirstChild("nein")) then
+							if not (v.Character.PrimaryPart:FindFirstChild("nein")) and isAlive(v) then
 								if v ~= lplr and v.Team ~= lplr.Team and ImageESP.Enabled then
 									local e = Instance.new("BillboardGui", v.Character.PrimaryPart)
 
@@ -568,12 +573,14 @@ Stealer = Player.NewButton({
 		if callback then
 			RBXScriptConnections['Stealer'] = RunService.Heartbeat:Connect(function()
 				task.spawn(function()
-					for i,v in pairs(chests) do
-						local Mag = (v.Position - lplr.Character.PrimaryPart.Position).Magnitude
-						if Mag <= 30 then
-							for _, item in pairs(v.ChestFolderValue.Value:GetChildren()) do
-								if item:IsA("Accessory") then
-									remotes.Chest:InvokeServer(v.ChestFolderValue.Value, item)
+					if isAlive(lplr) then
+						for i,v in pairs(chests) do
+							local Mag = (v.Position - lplr.Character.PrimaryPart.Position).Magnitude
+							if Mag <= 30 then
+								for _, item in pairs(v.ChestFolderValue.Value:GetChildren()) do
+									if item:IsA("Accessory") then
+										remotes.Chest:InvokeServer(v.ChestFolderValue.Value, item)
+									end
 								end
 							end
 						end
@@ -591,27 +598,29 @@ LongJump = Motion.NewButton({
 	Keybind = Enum.KeyCode.J,
 	Function = function(callback)
 		if callback then
-			if LongJumpMethod.Option == "Boost" then
-				TweenService:Create(lplr.Character.PrimaryPart, TweenInfo.new(2.2), {
-					CFrame = lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 50 + Vector3.new(0, 5, 0)
-				}):Play()
-				task.delay(0.8, function()
-					LongJump.ToggleButton(false)
-				end)
-			elseif LongJumpMethod.Option == "Gravity" then
-				workspace.Gravity = 5
-				task.delay(0.01, function()
-					lplr.Character.Humanoid:ChangeState(3)
-				end)
-			elseif LongJumpMethod.Option == "Yuzi" then
-				ReplicatedStorage:FindFirstChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events").useAbility:FireServer("dash")
-				workspace.Gravity = 0
-				if utils.onGround() then
-					for i = 1, 120 do
-						lplr.Character.PrimaryPart.CFrame += lplr.Character.PrimaryPart.CFrame.LookVector * 2
-						task.wait()
+			if isAlive(lplr) then
+				if LongJumpMethod.Option == "Boost" then
+					TweenService:Create(lplr.Character.PrimaryPart, TweenInfo.new(2.2), {
+						CFrame = lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 50 + Vector3.new(0, 5, 0)
+					}):Play()
+					task.delay(0.8, function()
+						LongJump.ToggleButton(false)
+					end)
+				elseif LongJumpMethod.Option == "Gravity" then
+					workspace.Gravity = 5
+					task.delay(0.01, function()
+						lplr.Character.Humanoid:ChangeState(3)
+					end)
+				elseif LongJumpMethod.Option == "Yuzi" then
+					ReplicatedStorage:FindFirstChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events").useAbility:FireServer("dash")
+					workspace.Gravity = 0
+					if utils.onGround() then
+						for i = 1, 120 do
+							lplr.Character.PrimaryPart.CFrame += lplr.Character.PrimaryPart.CFrame.LookVector * 2
+							task.wait()
+						end
+						workspace.Gravity = 196.2
 					end
-					workspace.Gravity = 196.2
 				end
 			end
 		else
@@ -633,31 +642,33 @@ Scaffold = Misc.NewButton({
 	["Function"] = function(callback)
 		if callback then
 			RBXScriptConnections['Scaffold'] = RunService.Heartbeat:Connect(function()
-				local block = getWool()
-				if game.UserInputService:IsKeyDown(Enum.KeyCode.Space) then
-					local velo = lplr.Character.PrimaryPart.Velocity
-					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X,25,velo.Z)
-					for i = 1, 4 do
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 1) - Vector3.new(0,i + 4.5 * 1.4,0), block)
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector) - Vector3.new(0,i + 4.5 * 1.1,0), block)
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector / 1.1) - Vector3.new(0,i + 4.5 / 1.1,0), block)
-						task.wait()
+				if isAlive(lplr) then
+					local block = getWool()
+					if game.UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+						local velo = lplr.Character.PrimaryPart.Velocity
+						lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X,25,velo.Z)
+						for i = 1, 4 do
+							placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 1) - Vector3.new(0,i + 4.5 * 1.4,0), block)
+							placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector) - Vector3.new(0,i + 4.5 * 1.1,0), block)
+							placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector / 1.1) - Vector3.new(0,i + 4.5 / 1.1,0), block)
+							task.wait()
+						end
 					end
-				end
-				if ScaffoldMode1.Option == "Normal" then
-					if not Scaffold.Enabled then return end
-					placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 0.5) - Vector3.new(0,4.5,0),block)
-				elseif ScaffoldMode1.Option == "Expand" then
-					for i = 1, 8 do
+					if ScaffoldMode1.Option == "Normal" then
 						if not Scaffold.Enabled then return end
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
-						task.wait(0.01)
-					end
-				elseif ScaffoldMode1.Option == "Expand2" then
-					for i = 1, 16 do
-						if not Scaffold.Enabled then return end
-						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
-						task.wait(0.01)
+						placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 0.5) - Vector3.new(0,4.5,0),block)
+					elseif ScaffoldMode1.Option == "Expand" then
+						for i = 1, 8 do
+							if not Scaffold.Enabled then return end
+							placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
+							task.wait(0.01)
+						end
+					elseif ScaffoldMode1.Option == "Expand2" then
+						for i = 1, 16 do
+							if not Scaffold.Enabled then return end
+							placeBlock((lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * i) - Vector3.new(0,4.5,0),block)
+							task.wait(0.01)
+						end
 					end
 				end
 			end)
