@@ -19,3 +19,7 @@ To get started, simply execute the following script in your executor:
 ```lua
 loadstring(game:HttpGet('https://raw.githubusercontent.com/sstvskids/PolarisRewrite/main/installer.lua'))()
 ```
+
+## 🧑‍💻 Contributors
+- springs67 (person who made Polaris)
+- sstvskids -> (._stav) (Maintainer of PolarisRewrite)
