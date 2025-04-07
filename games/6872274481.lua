@@ -23,6 +23,7 @@ local release: string = 'rewrite'
 
 isAlive = function(plr: string)
 	if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.Health > 0 end
+	return nil
 end
 
 repeat task.wait() until game:IsLoaded() and isAlive(lplr)
