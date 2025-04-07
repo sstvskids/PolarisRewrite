@@ -22,7 +22,7 @@ local HurtTime: string = 0
 local release: string = 'rewrite'
 
 isAlive = function(plr: string)
-	return plr.Character.Humanoid.Health > 0
+	if plr.Character.Humanoid then return plr.Character.Humanoid.Health > 0 end
 end
 
 repeat task.wait() until game:IsLoaded() and isAlive(lplr)
