@@ -21,12 +21,7 @@ local user: string = lplr.Name
 local HurtTime: string = 0
 local release: string = 'rewrite'
 
-isAlive = function(plr: string)
-	if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.Health > 0 end
-	return nil
-end
-
-repeat task.wait() until game:IsLoaded() and isAlive(lplr)
+repeat task.wait() until game:IsLoaded() and utils.isAlive(lplr)
 if utils.getDevice == 'mobile' then return lplr:Kick('no mobile support :) - stav') end
 
 if not isfile("polaris/configs/"..game.PlaceId..".json") then library.saveConfig() end
@@ -265,7 +260,7 @@ Aura = Combat.NewButton({
         if calling then
             RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestPlayer(18)
-                if nearest ~= nil and isAlive(lplr) then
+                if nearest ~= nil and utils.isAlive(lplr) then
                     local weapon = getBestWeapon()
 					local entity, plrpos, pred
 					if nearest:IsA('Player') then
@@ -299,7 +294,7 @@ Aura = Combat.NewButton({
                 end
 
                 task.spawn(function()
-                    if nearest ~= nil and isAlive(lplr) and CustomAnimation.Enabled then
+                    if nearest ~= nil and utils.isAlive(lplr) and CustomAnimation.Enabled then
                         pcall(function()
                             local animation = auraAnimations[auraAnimation.Option]
                             local allTime = 0
@@ -319,7 +314,7 @@ Aura = Combat.NewButton({
                 end)
 
                 task.spawn(function()
-                    if nearest ~= nil and isAlive(lplr) then
+                    if nearest ~= nil and utils.isAlive(lplr) then
                         local isWinning = function() return nearest.Character.Humanoid.Health > lplr.Character.Humanoid.Health end
                         if targetInfo ~= nil then
                             targetInfo = Instance.new('TextLabel', lplr.PlayerGui)
@@ -399,7 +394,7 @@ Speed = Motion.NewButton({
         if calling then
             task.spawn(function()
                 RBXScriptConnections['Speed'] = RunService.Heartbeat:Connect(function()
-					if isAlive(lplr) then
+					if utils.isAlive(lplr) then
 						ticks += 1
 						local dir = lplr.Character.Humanoid.MoveDirection
 						local velo = lplr.Character.PrimaryPart.Velocity
@@ -432,7 +427,7 @@ Fly = Motion.NewButton({
     Function = function(calling)
         if calling then
             RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
-				if isAlive(lplr) then
+				if utils.isAlive(lplr) then
 					local velo = lplr.Character.PrimaryPart.Velocity
 					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 2.03, velo.Z)
 
@@ -458,7 +453,7 @@ NoFall = Misc.NewButton({
 	Function = function(callback)
 		if callback then
 			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
-                if isAlive(lplr) and lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
+                if utils.isAlive(lplr) and lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
                     task.wait()
                     lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -10, lplr.Character.PrimaryPart.Velocity.Z)
                 end
@@ -496,7 +491,7 @@ ImageESP = Visuals.NewButton({
                 RBXScriptConnections['ESP'] = RunService.Heartbeat:Connect(function()
 					pcall(function()
 						for i,v in pairs(Players:GetPlayers()) do
-							if not (v.Character.PrimaryPart:FindFirstChild("nein")) and isAlive(v) then
+							if not (v.Character.PrimaryPart:FindFirstChild("nein")) and utils.isAlive(v) then
 								if v ~= lplr and v.Team ~= lplr.Team and ImageESP.Enabled then
 									local e = Instance.new("BillboardGui", v.Character.PrimaryPart)
 
@@ -574,7 +569,7 @@ Stealer = Player.NewButton({
 		if callback then
 			RBXScriptConnections['Stealer'] = RunService.Heartbeat:Connect(function()
 				task.spawn(function()
-					if isAlive(lplr) then
+					if utils.isAlive(lplr) then
 						for i,v in pairs(chests) do
 							local Mag = (v.Position - lplr.Character.PrimaryPart.Position).Magnitude
 							if Mag <= 30 then
@@ -599,7 +594,7 @@ LongJump = Motion.NewButton({
 	Keybind = Enum.KeyCode.J,
 	Function = function(callback)
 		if callback then
-			if isAlive(lplr) then
+			if utils.isAlive(lplr) then
 				if LongJumpMethod.Option == "Boost" then
 					TweenService:Create(lplr.Character.PrimaryPart, TweenInfo.new(2.2), {
 						CFrame = lplr.Character.PrimaryPart.CFrame + lplr.Character.PrimaryPart.CFrame.LookVector * 50 + Vector3.new(0, 5, 0)
@@ -643,7 +638,7 @@ Scaffold = Misc.NewButton({
 	["Function"] = function(callback)
 		if callback then
 			RBXScriptConnections['Scaffold'] = RunService.Heartbeat:Connect(function()
-				if isAlive(lplr) then
+				if utils.isAlive(lplr) then
 					local block = getWool()
 					if game.UserInputService:IsKeyDown(Enum.KeyCode.Space) then
 						local velo = lplr.Character.PrimaryPart.Velocity

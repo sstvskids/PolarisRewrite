@@ -19,5 +19,9 @@ end
 utils.newRaycast = function(start, dir)
     return workspace:Raycast(start, dir, Enum.RaycastFilterType.Exclude, {lplr.Character, workspace.CurrentCamera})
 end
+utils.isAlive = function(plr: string)
+    if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.Health > 0 end
+	return nil
+end
 
 return utils
