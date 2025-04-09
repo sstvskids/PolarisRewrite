@@ -107,7 +107,7 @@ local function getBestWeapon()
     return inventory:FindFirstChild(bestSword)
 end
 
-local function getNearestPlayer(range)
+local function getNearestPlayer(range: string)
     local nearestDist, nearest = math.huge
 	for i,v in pairs(Players:GetPlayers()) do
 		pcall(function()
@@ -146,7 +146,7 @@ local function getNearestPlayer(range)
 	return nearest
 end
 
-local function spoofHand(item)
+local function spoofHand(item: string)
 	if hasItem(item) then
 		remotes.SetInvItem:InvokeServer({
 			["hand"] = inventory:WaitForChild(item)
@@ -279,13 +279,13 @@ Aura = Combat.NewButton({
                             validate = {
                                 raycast = {
                                     	cameraPosition = plrpos,
-                                        cursorDirection = (plrpos - lplr.Character.PrimaryPart.Position).Unit
+                                        cursorDirection = ((plrpos) - lplr.Character.PrimaryPart.Position).Unit
                                     },
                                     targetPosition = {
                                         value = plrpos + pred
                                     },
                                     selfPosition = {
-                                        value = lplr.Character.PrimaryPart.Position
+                                        value = lplr.Character.PrimaryPart.Position + lplr.Character.Humanoid.MoveDirection
                                     },
                                 },
                             weapon = weapon
