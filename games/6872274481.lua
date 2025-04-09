@@ -120,7 +120,7 @@ local function getNearestPlayer(range: string)
 	end
 	for i,v in pairs(CollectionService:GetTagged('Monster')) do
 		pcall(function()
-			if v.Team == lplr.Team then return end
+			if v:GetAttribute('Team') == lplr:GetAttribute('Team') then return end
 			if v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
 				nearest = v
 				nearestDist = (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
