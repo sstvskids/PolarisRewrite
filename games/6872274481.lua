@@ -279,7 +279,7 @@ Aura = Combat.NewButton({
                             validate = {
                                 raycast = {
                                     	cameraPosition = plrpos,
-                                        cursorDirection = ((plrpos) - lplr.Character.PrimaryPart.Position).Unit
+                                        cursorDirection = (plrpos - lplr.Character.PrimaryPart.Position).Unit
                                     },
                                     targetPosition = {
                                         value = plrpos + pred
