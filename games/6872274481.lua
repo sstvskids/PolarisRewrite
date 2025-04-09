@@ -252,7 +252,7 @@ local funAnimations: table = {
 
 local animAuraTab: table = {}
 for i,v in pairs(auraAnimations) do table.insert(animAuraTab, i) end
-local targetInfo = Instance.new("TextLabel", library.ScreenGui)
+local targetInfo = Instance.new("TextLabel", lplr.PlayerGui)
 table.insert(RBXScriptConnections, 'Aura')
 Aura = Combat.NewButton({
     Name = "Aura",
@@ -262,35 +262,33 @@ Aura = Combat.NewButton({
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil and utils.isAlive(lplr) then
                     local weapon = getBestWeapon()
-					local entity, plrpos, pred
+					local lplrpos, entity, plrpos = lplr.Character.PrimaryPart.Position + lplr.Character.Humanoid.MoveDirection
 					if nearest:IsA('Player') then
-						entity, plrpos, pred = nearest.Character, nearest.Character.PrimaryPart.Position, nearest.Character.Humanoid.MoveDirection
+						entity, plrpos = nearest.Character, nearest.Character.PrimaryPart.Position + nearest.Character.Humanoid.MoveDirection
 					else
-						entity, plrpos, pred = nearest, nearest.PrimaryPart.Position, nearest.Humanoid.MoveDirection
+						entity, plrpos = nearest, nearest.PrimaryPart.Position + nearest.Humanoid.MoveDirection
 					end
                     spoofHand(weapon.Name)
 
-                    task.spawn(function()
-                        remotes.SwordHit:FireServer({
-                            chargedAttack = {
-                                chargeRatio = 0
+                    remotes.SwordHit:FireServer({
+                        chargedAttack = {
+                            chargeRatio = 0
+                        },
+                        entityInstance = entity,
+                        validate = {
+                            raycast = {
+                                cameraPosition = plrpos,
+                                cursorDirection = (plrpos - lplrpos).Unit
                             },
-                            entityInstance = entity,
-                            validate = {
-                                raycast = {
-                                    	cameraPosition = plrpos,
-                                        cursorDirection = (plrpos - lplr.Character.PrimaryPart.Position).Unit
-                                    },
-                                    targetPosition = {
-                                        value = plrpos + pred
-                                    },
-                                    selfPosition = {
-                                        value = lplr.Character.PrimaryPart.Position + lplr.Character.Humanoid.MoveDirection
-                                    },
-                                },
-                            weapon = weapon
-                        })
-                    end)
+                            targetPosition = {
+                                value = plrpos
+                            },
+                            selfPosition = {
+                                value = lplrpos
+                            },
+                        },
+                        weapon = weapon
+                    })
                 end
 
                 task.spawn(function()
@@ -316,7 +314,7 @@ Aura = Combat.NewButton({
                 task.spawn(function()
                     if nearest ~= nil and utils.isAlive(lplr) then
                         local isWinning = function() return nearest.Character.Humanoid.Health > lplr.Character.Humanoid.Health end
-                        if targetInfo ~= nil then
+                        if targetInfo == nil then
                             targetInfo = Instance.new('TextLabel', lplr.PlayerGui)
                         end
 
@@ -335,7 +333,7 @@ Aura = Combat.NewButton({
                                 hp.Position = UDim2.fromScale(0, .9)
                                 hp.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
                                 hp.BorderSizePixel = 0
-        
+
                                 TweenService:Create(hp,TweenInfo.new(1),{
                                     Size = UDim2.fromScale(0.01 * nearest.Character.Humanoid.Health,0.1)
                                 }):Play()
@@ -353,7 +351,7 @@ Aura = Combat.NewButton({
                                 targetInfo.Text = "  "..nearest.DisplayName
                                 --targetInfo.TextScaled = true
                                 targetInfo.TextXAlignment = Enum.TextXAlignment.Left
-                            end)	
+                            end)
                         end
                     else
                         pcall(function()
@@ -640,7 +638,7 @@ Scaffold = Misc.NewButton({
 			RBXScriptConnections['Scaffold'] = RunService.Heartbeat:Connect(function()
 				if utils.isAlive(lplr) then
 					local block = getWool()
-					if game.UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+					if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
 						local velo = lplr.Character.PrimaryPart.Velocity
 						lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X,25,velo.Z)
 						for i = 1, 4 do
