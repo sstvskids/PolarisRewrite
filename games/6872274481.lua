@@ -532,15 +532,21 @@ ImageESPStyle = ImageESP.NewPicker({
 	Options = stylesofskybox
 })
 
+table.insert(RBXScriptConnections, 'blockanim')
+table.insert(RBXScriptConnections, 'blockanim2')
 BlockingAnimation = Visuals.NewButton({
 	Name = "BlockingAnimation",
 	Function = function(callback)
 		if callback then
-			lplr:GetMouse().Button2Down:Connect(function()
+			RBXScriptConnections['blockanim'] = lplr:GetMouse().Button2Down:Connect(function()
 				viewmodel.C0 = oldweld * CFrame.new(0.7, -0.4, 0.1) * CFrame.Angles(math.rad(-65), math.rad(55), math.rad(-50))
 			end)
-			lplr:GetMouse().Button2Up:Connect(function()
+			RBXScriptConnections['blockanim'] = lplr:GetMouse().Button2Up:Connect(function()
 				viewmodel.C0 = oldweld
+			end)
+		else
+			pcall(function()
+				RBXScriptConnections['blockanim']:Disconnect()
 			end)
 		end
 	end,
