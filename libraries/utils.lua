@@ -4,7 +4,7 @@ local Players: Players = cloneref(game:GetService('Players'))
 local UserInputService: UserInputService = cloneref(game:GetService('UserInputService'))
 local lplr: Players = Players.LocalPlayer
 
-utils.getDevice = function()
+utils.getDevice = function(): string
     if UserInputService.TouchEnabled then return 'mobile' end return 'pc'
 end
 utils.onGround = function()
@@ -19,7 +19,7 @@ end
 utils.newRaycast = function(start, dir)
     return workspace:Raycast(start, dir, Enum.RaycastFilterType.Exclude, {lplr.Character, workspace.CurrentCamera})
 end
-utils.isAlive = function(plr: string)
+utils.isAlive = function(plr: string): Players
     if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.Health > 0 end
 	return nil
 end

@@ -270,25 +270,27 @@ Aura = Combat.NewButton({
 					end
                     spoofHand(weapon.Name)
 
-                    remotes.SwordHit:FireServer({
-                        chargedAttack = {
-                            chargeRatio = 0
-                        },
-                        entityInstance = entity,
-                        validate = {
-                            raycast = {
-                                cameraPosition = plrpos,
-                                cursorDirection = (plrpos - lplrpos + pred).Unit
-                            },
-                            targetPosition = {
-                                value = plrpos
-                            },
-                            selfPosition = {
-                                value = lplrpos
-                            },
-                        },
-                        weapon = weapon
-                    })
+					task.spawn(function()
+						remotes.SwordHit:FireServer({
+							chargedAttack = {
+								chargeRatio = 0
+							},
+							entityInstance = entity,
+							validate = {
+								raycast = {
+									cameraPosition = plrpos,
+									cursorDirection = (plrpos - lplrpos + pred).Unit
+								},
+								targetPosition = {
+									value = plrpos
+								},
+								selfPosition = {
+									value = lplrpos
+								},
+							},
+							weapon = weapon
+						})
+					end)
                 end
 
                 task.spawn(function()
