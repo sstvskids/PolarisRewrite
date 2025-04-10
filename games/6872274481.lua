@@ -262,7 +262,7 @@ Aura = Combat.NewButton({
                 local nearest = getNearestPlayer(18)
                 if nearest ~= nil and utils.isAlive(lplr) then
                     local weapon = getBestWeapon()
-					local lplrpos, entity, plrpos = lplr.Character.PrimaryPart.Position + lplr.Character.Humanoid.MoveDirection
+					local lplrpos, pred, entity, plrpos = lplr.Character.PrimaryPart.Position, lplr.Character.Humanoid.MoveDirection
 					if nearest:IsA('Player') then
 						entity, plrpos = nearest.Character, nearest.Character.PrimaryPart.Position + nearest.Character.Humanoid.MoveDirection
 					else
@@ -278,7 +278,7 @@ Aura = Combat.NewButton({
                         validate = {
                             raycast = {
                                 cameraPosition = plrpos,
-                                cursorDirection = (plrpos - lplrpos).Unit
+                                cursorDirection = (plrpos - lplrpos + pred).Unit
                             },
                             targetPosition = {
                                 value = plrpos
