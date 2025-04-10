@@ -541,12 +541,13 @@ BlockingAnimation = Visuals.NewButton({
 			RBXScriptConnections['blockanim'] = lplr:GetMouse().Button2Down:Connect(function()
 				viewmodel.C0 = oldweld * CFrame.new(0.7, -0.4, 0.1) * CFrame.Angles(math.rad(-65), math.rad(55), math.rad(-50))
 			end)
-			RBXScriptConnections['blockanim'] = lplr:GetMouse().Button2Up:Connect(function()
+			RBXScriptConnections['blockanim2'] = lplr:GetMouse().Button2Up:Connect(function()
 				viewmodel.C0 = oldweld
 			end)
 		else
 			pcall(function()
 				RBXScriptConnections['blockanim']:Disconnect()
+				RBXScriptConnections['blockanim2']:Disconnect()
 			end)
 		end
 	end,
