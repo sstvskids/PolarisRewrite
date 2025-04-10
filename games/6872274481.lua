@@ -15,14 +15,14 @@ local RunService: RunService = cloneref(game:GetService('RunService'))
 local TweenService: TweenService = cloneref(game:GetService('TweenService'))
 local CollectionService: CollectionService = cloneref(game:GetService("CollectionService"))
 local lplr: Players = Players.LocalPlayer
-local inventory = workspace[lplr.Name].InventoryFolder.Value
-
-local user: string = lplr.Name
-local HurtTime: string = 0
-local release: string = 'rewrite'
 
 repeat task.wait() until game:IsLoaded() and utils.isAlive(lplr)
 if utils.getDevice == 'mobile' then return lplr:Kick('no mobile support :) - stav') end
+
+local inventory = workspace[lplr.Name].InventoryFolder.Value
+local user: string = lplr.Name
+local HurtTime: string = 0
+local release: string = 'rewrite'
 
 if not isfile("polaris/configs/"..game.PlaceId..".json") then library.saveConfig() end
 library.loadConfig()

@@ -2,6 +2,7 @@ if not isfolder('polaris') then return nil end
 
 local library: table = loadfile('polaris/libraries/interface.lua')()
 local utils: table = loadfile('polaris/libraries/utils.lua')()
+local weapons: table = loadfile('polaris/libraries/weapons.lua')()
 local connections: table = {}
 local RBXScriptConnections: table = {}
 
@@ -15,12 +16,12 @@ local TweenService: TweenService = cloneref(game:GetService('TweenService'))
 local CollectionService: CollectionService = cloneref(game:GetService("CollectionService"))
 local lplr: Players = Players.LocalPlayer
 
+repeat task.wait() until game:IsLoaded() and utils.isAlive(lplr)
+if utils.getDevice == 'mobile' then return lplr:Kick('no mobile support :) - stav') end
+
 local user: string = lplr.Name
 local HurtTime: string = 0
 local release: string = 'rewrite'
-
-repeat task.wait() until game:IsLoaded() and lplr.Character
-if utils.getDevice == 'mobile' then return lplr:Kick('no mobile support :) - stav') end
 
 if not isfile("polaris/configs/"..game.PlaceId..".json") then library.saveConfig() end
 library.loadConfig()
