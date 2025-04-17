@@ -5,7 +5,10 @@ local UserInputService: UserInputService = cloneref(game:GetService('UserInputSe
 local lplr: Players = Players.LocalPlayer
 
 utils.getDevice = function(): string
-    if UserInputService.TouchEnabled then return 'mobile' end return 'pc'
+    if UserInputService.TouchEnabled then
+        return 'mobile'
+    end
+    return 'pc'
 end
 utils.onGround = function()
     return lplr.Character.Humanoid.FloorMaterial ~= Enum.Material.Air
@@ -17,11 +20,16 @@ utils.isMoving = function()
     return UserInputService:IsKeyDown("W") or UserInputService:IsKeyDown("A") or UserInputService:IsKeyDown("S") or UserInputService:IsKeyDown("D")
 end
 utils.newRaycast = function(start, dir)
-    return workspace:Raycast(start, dir, Enum.RaycastFilterType.Exclude, {lplr.Character, workspace.CurrentCamera})
+    local params = RaycastParams.new()
+    params.FilterDescendantsInstances = {lplr.Character}
+    return workspace:Raycast(start, dir, params)
 end
 utils.isAlive = function(plr: string): Players
     if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.Health > 0 end
 	return nil
+end
+utils.getServerPos = function(pos)
+	return Vector3.new(math.round(pos.X) / 3, math.round(pos.Y) / 3, math.round(pos.Z) / 3)
 end
 
 return utils

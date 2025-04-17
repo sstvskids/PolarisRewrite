@@ -8,12 +8,12 @@ local RBXScriptConnections: table = {}
 
 local cloneref = cloneref or function(v) return v end
 local Players: Players = cloneref(game:GetService('Players'))
-local Lighting: Lighting = cloneref(game:GetService("Lighting"))
+local Lighting: Lighting = cloneref(game:GetService('Lighting'))
 local ReplicatedStorage: ReplicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local UserInputService: UserInputService = cloneref(game:GetService('UserInputService'))
 local RunService: RunService = cloneref(game:GetService('RunService'))
 local TweenService: TweenService = cloneref(game:GetService('TweenService'))
-local CollectionService: CollectionService = cloneref(game:GetService("CollectionService"))
+local CollectionService: CollectionService = cloneref(game:GetService('CollectionService'))
 local lplr: Players = Players.LocalPlayer
 
 repeat task.wait() until game:IsLoaded() and utils.isAlive(lplr)
@@ -85,7 +85,8 @@ end
 local remotes: table = {
     SetInvItem = getRemote("SetInvItem"),
     SwordHit = getRemote("SwordHit"),
-	Chest = getRemote("Inventory/ChestGetItem")
+	Chest = getRemote("Inventory/ChestGetItem"),
+	BreakBlock = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@easy-games"):WaitForChild("block-engine"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("DamageBlock")
 }
 
 local function hasItem(item)
@@ -107,41 +108,64 @@ local function getBestWeapon()
     return inventory:FindFirstChild(bestSword)
 end
 
-local function getNearestPlayer(range: string)
-    local nearestDist, nearest = math.huge
-	for i,v in pairs(Players:GetPlayers()) do
-		pcall(function()
-			if v == lplr or v.Team == lplr.Team then return end
-			if v.Character.Humanoid.health > 0 and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
-				nearest = v
-				nearestDist = (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
-			end
-		end)
+local function getNearestObject(type: string, range: string)
+	local nearestDist, nearest
+	if type == 'player' then
+		nearestDist, nearest = math.huge
+		for i,v in pairs(Players:GetPlayers()) do
+			pcall(function()
+				if v == lplr or v.Team == lplr.Team then return end
+				if v.Character.Humanoid.health > 0 and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+					nearest = v
+					nearestDist = (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+				end
+			end)
+		end
+		for i,v in pairs(CollectionService:GetTagged('Monster')) do
+			pcall(function()
+				if v:GetAttribute('Team') == lplr:GetAttribute('Team') then return end
+				if v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+					nearest = v
+					nearestDist = (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+				end
+			end)
+		end
+		for i,v in pairs(CollectionService:GetTagged('DiamondGuardian')) do
+			pcall(function()
+				if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+					nearest = v
+					nearestDist = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+				end
+			end)
+		end
+		for i,v in pairs(CollectionService:GetTagged('GolemBoss')) do
+			pcall(function()
+				if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
+					nearest = v
+					nearestDist = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+				end
+			end)
+		end
 	end
-	for i,v in pairs(CollectionService:GetTagged('Monster')) do
-		pcall(function()
-			if v:GetAttribute('Team') == lplr:GetAttribute('Team') then return end
-			if v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
-				nearest = v
-				nearestDist = (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+	if type == 'bed' then
+		nearestDist, nearest = range
+		for i,v in pairs(CollectionService:GetTagged('Bed')) do
+			if v:FindFirstChild('Blanket').BrickColor ~= lplr.Team.TeamColor then
+				if v:GetAttribute("BedShieldEndTime") and v:GetAttribute("BedShieldEndTime") < workspace:GetServerTimeNow() then
+					local dist: number = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+					if dist < nearestDist then
+						nearest = v
+						nearestDist = dist
+					end
+				elseif not v:GetAttribute("BedShieldEndTime") then
+					local dist: number = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
+					if dist < nearestDist then
+						nearest = v
+						nearestDist = dist
+					end
+				end
 			end
-		end)
-	end
-	for i,v in pairs(CollectionService:GetTagged('DiamondGuardian')) do
-		pcall(function()
-			if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
-				nearest = v
-				nearestDist = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
-			end
-		end)
-	end
-	for i,v in pairs(CollectionService:GetTagged('GolemBoss')) do
-		pcall(function()
-			if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
-				nearest = v
-				nearestDist = (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
-			end
-		end)
+		end
 	end
 	return nearest
 end
@@ -154,7 +178,7 @@ local function spoofHand(item: string)
 	end
 end
 
-local function placeBlock(pos, block)
+local function placeBlock(pos: Vector3, block)
 	blockenginemanaged.PlaceBlock:InvokeServer({
 		['blockType'] = block,
 		['position'] = Vector3.new(pos.X / 3,pos.Y / 3,pos.Z / 3),
@@ -259,7 +283,7 @@ Aura = Combat.NewButton({
     Function = function(calling)
         if calling then
             RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
-                local nearest = getNearestPlayer(18)
+                local nearest = getNearestObject('player', 18)
                 if nearest ~= nil and utils.isAlive(lplr) then
                     local weapon = getBestWeapon()
 					local lplrpos, pred, entity, plrpos = lplr.Character.PrimaryPart.Position, lplr.Character.Humanoid.MoveDirection
@@ -703,6 +727,42 @@ AirJump = Motion.NewButton({
 		end
 	end,
 })
+
+--[[table.insert(RBXScriptConnections, 'Nuker')
+Nuker = Exploit.NewButton({
+	Name = "Nuker",
+	Function = function(callback)
+		if callback then
+			RBXScriptConnections['Nuker'] = RunService.Heartbeat:Connect(function()
+				if utils.isAlive(lplr) then
+					local nearest = getNearestObject('bed', 30)
+					if nearest then
+						task.spawn(function()
+							local rayparams = RaycastParams.new()
+							rayparams.FilterType = Enum.RaycastFilterType.Exclude
+							rayparams.FilterDescendantsInstances = {lplr.Character}
+							rayparams.IgnoreWater = true
+							local rayresult = workspace.Raycast(nearest.Position + Vector3.new(0, 30, 0), Vector3.new(0, -35, 0), rayparams)
+
+							if rayresult then
+								local targetPos = rayresult.Instance and rayresult.Instance.Position or nearest.Position
+								remotes.BreakBlock:InvokeServer({
+									blockRef = {
+										blockPosition = utils.GetServerPosition(targetPos)
+									},
+									hitPosition = utils.GetServerPosition(targetPos),
+									hitNormal = utils.GetServerPosition(targetPos)
+								})
+							end
+						end)
+					end
+				end
+			end)
+		else
+			RBXScriptConnections['Nuker']:Disconnect()
+		end
+	end,
+})]]
 
 -- uninject FULLY uninjects Polaris this time
 Uninject = Misc.NewButton({
