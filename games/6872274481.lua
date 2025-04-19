@@ -119,7 +119,7 @@ local function getNearestObject(type: string, range: string): string
 		for i,v in pairs(Players:GetPlayers()) do
 			pcall(function()
 				if v == lplr or v.Team == lplr.Team then return end
-				if select(1, whitelist:get(v.UserId)) > whitelist.level and select(2, whitelist:get(v.UserId)) then return end
+				if select(1, whitelist:get(tostring(v.UserId))) > whitelist.level and select(2, whitelist:get(tostring(v.UserId))) then return end
 				if v.Character.Humanoid.health > 0 and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
 					nearest = v
 					nearestDist = (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude

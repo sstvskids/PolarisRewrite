@@ -9,6 +9,7 @@ local whitelist = {
     attackable = false,
     level = 0,
 }
+
 local suc, res = pcall(function()
     return HttpService:JSONDecode(readfile('polaris/libraries/whitelist.json'))
 end)
