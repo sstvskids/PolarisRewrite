@@ -46,7 +46,7 @@ table.insert(connections, function(char)
 	inventory = workspace[lplr.Name].InventoryFolder.Value
 end)
 
-local lastHPHurt = 100
+local lastHPHurt = utils.getMaxHealth(lplr)
 task.spawn(function()
 	repeat task.wait()
 		if utils.isAlive(lplr) then
@@ -453,7 +453,7 @@ Fly = Motion.NewButton({
             RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
 				if utils.isAlive(lplr) then
 					local velo = lplr.Character.PrimaryPart.Velocity
-					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 2.03, velo.Z)
+					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 1.41, velo.Z)
 
 					if UserInputService:IsKeyDown("Space") then
 						lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 44, velo.Z)
@@ -477,9 +477,13 @@ NoFall = Misc.NewButton({
 	Function = function(callback)
 		if callback then
 			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
-                if utils.isAlive(lplr) and lplr.Character.PrimaryPart.Velocity.Y < -70 and not utils.onGround() then
-                    task.wait()
-                    lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -10, lplr.Character.PrimaryPart.Velocity.Z)
+                if utils.isAlive(lplr) then
+					task.wait()
+					if Method.Option == 'Velocity' and (lplr.Character.PrimaryPart.Velocity.Y < -85) and not utils.onGround() then
+						lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, 0, lplr.Character.PrimaryPart.Velocity.Z)
+					elseif Method.Option == 'State' and (lplr.Character.PrimaryPart.Velocity.Y < -85) and not utils.onGround() then
+						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+					end
                 end
 			end)
 		else
@@ -488,6 +492,10 @@ NoFall = Misc.NewButton({
 			end)
 		end
 	end,
+})
+Method = NoFall.NewPicker({
+	Name = "Method",
+	Options = {'Velocity', 'State'}
 })
 
 local ESPAssets: table = {
