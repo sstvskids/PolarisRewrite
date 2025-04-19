@@ -41,7 +41,7 @@ function whitelist.kill(func)
 end
 
 if whitelist.data.BlacklistedUsers[tostring(RBXAnalyticsService:GetClientId())] then
-    lplr:Kick(whitelist.data.BlacklistedUsers[tostring(RBXAnalyticsService:GetClientId())])
+    return lplr:Kick(whitelist.data.BlacklistedUsers[tostring(RBXAnalyticsService:GetClientId())])
 end
 
 return whitelist
