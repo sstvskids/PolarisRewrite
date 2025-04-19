@@ -2,6 +2,10 @@
     "WhitelistedUsers": {
         "8303179216": {
             "attackable": false,
+            "level": 2
+        },
+        "2409643999": {
+            "attackable": false,
             "level": 1
         }
     },
