@@ -479,9 +479,9 @@ NoFall = Misc.NewButton({
 			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
                 if utils.isAlive(lplr) then
 					task.wait()
-					if Method.Option == 'Velocity' and (lplr.Character.PrimaryPart.Velocity.Y < -85) and not utils.onGround() then
-						lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, 0, lplr.Character.PrimaryPart.Velocity.Z)
-					elseif Method.Option == 'State' and (lplr.Character.PrimaryPart.Velocity.Y < -85) and not utils.onGround() then
+					if Method.Option == 'Velocity' and (lplr.Character.PrimaryPart.Velocity.Y < -80) and not utils.onGround() then
+						lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -85, lplr.Character.PrimaryPart.Velocity.Z)
+					elseif Method.Option == 'State' and (lplr.Character.PrimaryPart.Velocity.Y < -80) and not utils.onGround() then
 						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
                 end
