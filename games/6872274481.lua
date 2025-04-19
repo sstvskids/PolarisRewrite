@@ -49,12 +49,14 @@ end)
 local lastHPHurt = 100
 task.spawn(function()
 	repeat task.wait()
-		if (lplr.Character.Humanoid.Health < lastHPHurt) then
-			HurtTime = 0
-		end
+		if utils.isAlive(lplr) then
+			if (lplr.Character.Humanoid.Health < lastHPHurt) then
+				HurtTime = 0
+			end
 
-		lastHPHurt = lplr.Character.Humanoid.Health
-		HurtTime += 1
+			lastHPHurt = lplr.Character.Humanoid.Health
+			HurtTime += 1
+		end
 	until false
 end)
 
