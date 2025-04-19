@@ -46,7 +46,7 @@ table.insert(connections, function(char)
 	inventory = workspace[lplr.Name].InventoryFolder.Value
 end)
 
-local lastHPHurt = utils.getMaxHealth(lplr)
+local lastHPHurt = utils.getMaxHealth()
 task.spawn(function()
 	repeat task.wait()
 		if utils.isAlive(lplr) then
@@ -477,10 +477,10 @@ NoFall = Misc.NewButton({
 	Function = function(callback)
 		if callback then
 			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
-                if utils.isAlive(lplr) then
+                if utils.isAlive(lplr) and not Fly.Enabled then
 					task.wait()
 					if Method.Option == 'Velocity' and (lplr.Character.PrimaryPart.Velocity.Y < -80) and not utils.onGround() then
-						lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -85, lplr.Character.PrimaryPart.Velocity.Z)
+						lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, -90, lplr.Character.PrimaryPart.Velocity.Z)
 					elseif Method.Option == 'State' and (lplr.Character.PrimaryPart.Velocity.Y < -80) and not utils.onGround() then
 						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
