@@ -32,7 +32,7 @@ function whitelist:get(plr: string): string
 end
 
 function whitelist.kill(func)
-    if whitelist.data.KillPolaris == true then
+    if whitelist.data.KillPolaris then
         return func
     end
 end
