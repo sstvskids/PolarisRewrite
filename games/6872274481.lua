@@ -772,7 +772,6 @@ Nuker = Exploit.NewButton({
 	end,
 })]]
 
--- uninject FULLY uninjects Polaris this time
 Uninject = Misc.NewButton({
 	Name = "Uninject",
 	Function = function(callback)
