@@ -1,0 +1,10 @@
+{
+    "WhitelistedUsers": {
+        "useridtest": {
+            "attackable": false,
+            "level": 1
+        }
+    },
+    "BlacklistedUsers": {},
+    "KillPolaris": false
+}

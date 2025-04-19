@@ -29,7 +29,9 @@ utils.isAlive = function(plr: string): Players
 	return nil
 end
 utils.getMaxHealth = function(plr: string): Players
+    plr = plr or lplr
     if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.MaxHealth end
+    return 100
 end
 utils.getServerPos = function(pos)
 	return Vector3.new(math.round(pos.X) / 3, math.round(pos.Y) / 3, math.round(pos.Z) / 3)

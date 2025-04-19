@@ -3,6 +3,7 @@ if not isfolder('polaris') then return nil end
 local library: table = loadfile('polaris/libraries/interface.lua')()
 local utils: table = loadfile('polaris/libraries/utils.lua')()
 local weapons: table = loadfile('polaris/libraries/weapons.lua')()
+local whitelist: table = loadfile('polaris/libraries/whitelist.lua')()
 local connections: table = {}
 local RBXScriptConnections: table = {}
 
@@ -26,6 +27,7 @@ local release: string = 'rewrite'
 
 if not isfile("polaris/configs/"..game.PlaceId..".json") then library.saveConfig() end
 library.loadConfig()
+whitelist:check()
 
 lplr.CharacterAdded:Connect(function(char)
     repeat task.wait(1) until char ~= nil
@@ -71,7 +73,7 @@ Legit = library.NewWindow('Legit')
 local _NetManaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged
 local blockenginemanaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules:WaitForChild("@easy-games"):WaitForChild("block-engine").node_modules:WaitForChild("@rbxts").net.out:WaitForChild("_NetManaged")
 
-local function getRemote(name)
+local function getRemote(name: string): string
     local remote
     task.spawn(function()
         for i,v in pairs(game:GetDescendants()) do
@@ -91,7 +93,7 @@ local remotes: table = {
 	BreakBlock = ReplicatedStorage:WaitForChild("rbxts_include"):WaitForChild("node_modules"):WaitForChild("@easy-games"):WaitForChild("block-engine"):WaitForChild("node_modules"):WaitForChild("@rbxts"):WaitForChild("net"):WaitForChild("out"):WaitForChild("_NetManaged"):WaitForChild("DamageBlock")
 }
 
-local function hasItem(item)
+local function hasItem(item: string): string
     if inventory:FindFirstChild(item) then return true, 1 end
     return false
 end
@@ -110,13 +112,14 @@ local function getBestWeapon()
     return inventory:FindFirstChild(bestSword)
 end
 
-local function getNearestObject(type: string, range: string)
+local function getNearestObject(type: string, range: string): string
 	local nearestDist, nearest
 	if type == 'player' then
 		nearestDist, nearest = math.huge
 		for i,v in pairs(Players:GetPlayers()) do
 			pcall(function()
 				if v == lplr or v.Team == lplr.Team then return end
+				if select(1, whitelist:get(v.UserId)) > whitelist.level and select(2, whitelist:get(v.UserId)) then return end
 				if v.Character.Humanoid.health > 0 and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
 					nearest = v
 					nearestDist = (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude
@@ -783,3 +786,5 @@ Uninject = Misc.NewButton({
 		end
 	end,
 })
+
+--whitelist.kill(library:uninject())

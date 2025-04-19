@@ -3,6 +3,7 @@ if not isfolder('polaris') then return nil end
 local library: table = loadfile('polaris/libraries/interface.lua')()
 local utils: table = loadfile('polaris/libraries/utils.lua')()
 local weapons: table = loadfile('polaris/libraries/weapons.lua')()
+local whitelist: table = loadfile('polaris/libraries/weapons.lua')()
 local connections: table = {}
 local RBXScriptConnections: table = {}
 
@@ -49,4 +50,5 @@ Misc = library.NewWindow('Misc')
 Exploit = library.NewWindow('Exploit')
 Legit = library.NewWindow('Legit')
 
-return lplr:Kick('universal.lua == not finished (roblox bedwars is supported)')
+--whitelist:kill(library:uninject())
+return lplr:Kick('universal.lua == not finished (roblox bedwars in-match is supported)')
