@@ -50,5 +50,5 @@ Misc = library.NewWindow('Misc')
 Exploit = library.NewWindow('Exploit')
 Legit = library.NewWindow('Legit')
 
---whitelist:kill(library:uninject())
+--whitelist.kill(library:uninject())
 return lplr:Kick('universal.lua == not finished (roblox bedwars in-match is supported)')
