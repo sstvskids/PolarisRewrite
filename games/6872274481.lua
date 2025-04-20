@@ -301,7 +301,7 @@ Aura = Combat.NewButton({
 
 					task.spawn(function()
 						remotes.SwordHit:FireServer({
-							chargeRatio = 0.4285,
+							chargeRatio = 0.4284,
 							entityInstance = entity,
 							validate = {
 								raycast = {
