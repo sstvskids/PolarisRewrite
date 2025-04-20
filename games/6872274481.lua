@@ -787,4 +787,6 @@ Uninject = Misc.NewButton({
 	end,
 })
 
---whitelist.kill(library:uninject())
+whitelist:kill(function()
+    library:uninject()
+end)

@@ -19,25 +19,25 @@ function whitelist:check()
     if self.checked then return self.level, self.attackable end
     self.checked = true
     for i,v in pairs(self.data.WhitelistedUsers) do
-        if v == lplr.UserId then
-            self.level = i
-            self.attackable = i
+        if tostring(lplr.UserId) == i then
+            self.level = v.level
+            self.attackable = v.attackable
             break
         end
     end
     return self.level, self.attackable
 end
 
-function whitelist:get(plr: string): string
+function whitelist:get(plr: string): (number, boolean)
     if self.data.WhitelistedUsers[plr] then
         return self.data.WhitelistedUsers[plr].level, self.data.WhitelistedUsers[plr].attackable
     end
     return self.level, self.attackable
 end
 
-function whitelist.kill(func)
-    if whitelist.data.KillPolaris then
-        return func
+function whitelist:kill(func)
+    if self.data.KillPolaris then
+        return func()
     end
 end
 
