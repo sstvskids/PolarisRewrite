@@ -5,6 +5,7 @@ local utils: table = loadfile('polaris/libraries/utils.lua')()
 local weapons: table = loadfile('polaris/libraries/weapons.lua')()
 local whitelist: table = loadfile('polaris/libraries/whitelist.lua')()
 local connections: table = {}
+local RBXScriptConnections: table = {}
 
 local cloneref = cloneref or function(v) return v end
 local Players: Players = cloneref(game:GetService('Players'))
@@ -281,12 +282,12 @@ local funAnimations: table = {
 local animAuraTab: table = {}
 for i,v in pairs(auraAnimations) do table.insert(animAuraTab, i) end
 local targetInfo = Instance.new("TextLabel", lplr.PlayerGui)
-table.insert(library.RBXScriptConnections, 'Aura')
+table.insert(RBXScriptConnections, 'Aura')
 Aura = Combat.NewButton({
     Name = "Aura",
     Function = function(calling)
         if calling then
-            library.RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
+            RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestObject('player', 18)
                 if nearest ~= nil and utils.isAlive(lplr) then
                     local weapon = getBestWeapon()
@@ -391,7 +392,7 @@ Aura = Combat.NewButton({
             end)
         else
             pcall(function()
-                library.RBXScriptConnections['Aura']:Disconnect()
+                RBXScriptConnections['Aura']:Disconnect()
             end)
         end
     end
@@ -412,14 +413,14 @@ table.insert(connections, function(char)
 	viewmodel = workspace.Camera.Viewmodel.RightHand.RightWrist
 end)
 
-table.insert(library.RBXScriptConnections, 'Speed')
+table.insert(RBXScriptConnections, 'Speed')
 local ticks = 0
 Speed = Motion.NewButton({
     Name = "Speed",
     Function = function(calling)
         if calling then
             task.spawn(function()
-                library.RBXScriptConnections['Speed'] = RunService.Heartbeat:Connect(function()
+                RBXScriptConnections['Speed'] = RunService.Heartbeat:Connect(function()
 					if utils.isAlive(lplr) then
 						ticks += 1
 						local dir = lplr.Character.Humanoid.MoveDirection
@@ -437,7 +438,7 @@ Speed = Motion.NewButton({
             end)
         else
             pcall(function()
-                library.RBXScriptConnections['Speed']:Disconnect()
+                RBXScriptConnections['Speed']:Disconnect()
             end)
         end
     end
@@ -446,13 +447,13 @@ DamageBoost = Speed.NewToggle({
 	Name = "DamageBoost"
 })
 
-table.insert(library.RBXScriptConnections, 'Fly')
+table.insert(RBXScriptConnections, 'Fly')
 Fly = Motion.NewButton({
     Name = "Fly",
     Keybind = Enum.KeyCode.R,
     Function = function(calling)
         if calling then
-            library.RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
+            RBXScriptConnections['Fly'] = RunService.Heartbeat:Connect(function()
 				if utils.isAlive(lplr) then
 					local velo = lplr.Character.PrimaryPart.Velocity
 					lplr.Character.PrimaryPart.Velocity = Vector3.new(velo.X, 1.41, velo.Z)
@@ -467,18 +468,18 @@ Fly = Motion.NewButton({
 			end)
         else
             pcall(function()
-                library.RBXScriptConnections['Fly']:Disconnect()
+                RBXScriptConnections['Fly']:Disconnect()
             end)
         end
     end
 })
 
-table.insert(library.RBXScriptConnections, 'NoFall')
+table.insert(RBXScriptConnections, 'NoFall')
 NoFall = Misc.NewButton({
 	Name = "NoFall",
 	Function = function(callback)
 		if callback then
-			library.RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
+			RBXScriptConnections['NoFall'] = RunService.Heartbeat:Connect(function()
                 if utils.isAlive(lplr) and not Fly.Enabled then
 					task.wait()
 					if Method.Option == 'Velocity' and (lplr.Character.PrimaryPart.Velocity.Y < -80) and not utils.onGround() then
@@ -490,7 +491,7 @@ NoFall = Misc.NewButton({
 			end)
 		else
 			pcall(function()
-				library.RBXScriptConnections['NoFall']:Disconnect()
+				RBXScriptConnections['NoFall']:Disconnect()
 			end)
 		end
 	end,
@@ -516,13 +517,13 @@ local ESPAssets: table = {
 }
 local stylesofskybox: table = {}
 for i,v in ESPAssets do table.insert(stylesofskybox, i) end
-table.insert(library.RBXScriptConnections, 'ESP')
+table.insert(RBXScriptConnections, 'ESP')
 ImageESP = Visuals.NewButton({
 	Name = "ImageESP",
 	Function = function(callback)
 		if callback then
 			task.spawn(function()
-                library.RBXScriptConnections['ESP'] = RunService.Heartbeat:Connect(function()
+                RBXScriptConnections['ESP'] = RunService.Heartbeat:Connect(function()
 					pcall(function()
 						for i,v in pairs(Players:GetPlayers()) do
 							if not (v.Character.PrimaryPart:FindFirstChild("nein")) and utils.isAlive(v) then
@@ -547,7 +548,7 @@ ImageESP = Visuals.NewButton({
 			end)
 		else
             task.spawn(function()
-                library.RBXScriptConnections['ESP']:Disconnect()
+                RBXScriptConnections['ESP']:Disconnect()
             end)
 			pcall(function()
 				for i,v in pairs(Players:GetPlayers()) do
@@ -566,49 +567,49 @@ ImageESPStyle = ImageESP.NewPicker({
 	Options = stylesofskybox
 })
 
-table.insert(library.RBXScriptConnections, 'blockanim')
-table.insert(library.RBXScriptConnections, 'blockanim2')
+table.insert(RBXScriptConnections, 'blockanim')
+table.insert(RBXScriptConnections, 'blockanim2')
 BlockingAnimation = Visuals.NewButton({
 	Name = "BlockingAnimation",
 	Function = function(callback)
 		if callback then
-			library.RBXScriptConnections['blockanim'] = lplr:GetMouse().Button2Down:Connect(function()
+			RBXScriptConnections['blockanim'] = lplr:GetMouse().Button2Down:Connect(function()
 				viewmodel.C0 = oldweld * CFrame.new(0.7, -0.4, 0.1) * CFrame.Angles(math.rad(-65), math.rad(55), math.rad(-50))
 			end)
-			library.RBXScriptConnections['blockanim2'] = lplr:GetMouse().Button2Up:Connect(function()
+			RBXScriptConnections['blockanim2'] = lplr:GetMouse().Button2Up:Connect(function()
 				viewmodel.C0 = oldweld
 			end)
 		else
 			pcall(function()
-				library.RBXScriptConnections['blockanim']:Disconnect()
-				library.RBXScriptConnections['blockanim2']:Disconnect()
+				RBXScriptConnections['blockanim']:Disconnect()
+				RBXScriptConnections['blockanim2']:Disconnect()
 			end)
 		end
 	end,
 })
 
 local oldFOV = workspace.CurrentCamera.FieldOfView
-table.insert(library.RBXScriptConnections, 'Camera')
+table.insert(RBXScriptConnections, 'Camera')
 Camera = Visuals.NewButton({
 	Name = "FOVChanger",
 	Function = function(callback)
 		if callback then
-			library.RBXScriptConnections['Camera'] = RunService.Heartbeat:Connect(function()
+			RBXScriptConnections['Camera'] = RunService.Heartbeat:Connect(function()
 				workspace.CurrentCamera.FieldOfView = 120
 			end)
 		else
-			library.RBXScriptConnections['Camera']:Disconnect()
+			RBXScriptConnections['Camera']:Disconnect()
 			workspace.CurrentCamera.FieldOfView = oldFOV
 		end
 	end,
 })
 
-table.insert(library.RBXScriptConnections, 'Stealer')
+table.insert(RBXScriptConnections, 'Stealer')
 Stealer = Player.NewButton({
 	Name = "Stealer",
 	Function = function(callback)
 		if callback then
-			library.RBXScriptConnections['Stealer'] = RunService.Heartbeat:Connect(function()
+			RBXScriptConnections['Stealer'] = RunService.Heartbeat:Connect(function()
 				task.spawn(function()
 					if utils.isAlive(lplr) then
 						for i,v in pairs(chests) do
@@ -625,7 +626,7 @@ Stealer = Player.NewButton({
 				end)
 			end)
 		else
-			library.RBXScriptConnections['Stealer']:Disconnect()
+			RBXScriptConnections['Stealer']:Disconnect()
 		end
 	end,
 })
@@ -673,12 +674,12 @@ LongJumpMethod = LongJump.NewPicker({
 	Options = {"Boost", "Gravity", "Yuzi"}
 })
 
-table.insert(library.RBXScriptConnections, 'Scaffold')
+table.insert(RBXScriptConnections, 'Scaffold')
 Scaffold = Misc.NewButton({
 	["Name"] = "Scaffold",
 	["Function"] = function(callback)
 		if callback then
-			library.RBXScriptConnections['Scaffold'] = RunService.Heartbeat:Connect(function()
+			RBXScriptConnections['Scaffold'] = RunService.Heartbeat:Connect(function()
 				if utils.isAlive(lplr) then
 					local block = getWool()
 					if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
@@ -710,7 +711,7 @@ Scaffold = Misc.NewButton({
 				end
 			end)
 		else
-			library.RBXScriptConnections['Scaffold']:Disconnect()
+			RBXScriptConnections['Scaffold']:Disconnect()
 		end
 	end,
 })
@@ -719,13 +720,13 @@ ScaffoldMode1 = Scaffold.NewPicker({
 	Options = {"Normal", "Expand", "Expand2"}
 })
 
-table.insert(library.RBXScriptConnections, 'AirJump')
+table.insert(RBXScriptConnections, 'AirJump')
 AirJump = Motion.NewButton({
 	Name = "AirJump",
 	Keybind = Enum.KeyCode.K,
 	Function = function(callback)
 		if callback then
-			library.RBXScriptConnections['AirJump'] = UserInputService.InputBegan:Connect(function(k,g)
+			RBXScriptConnections['AirJump'] = UserInputService.InputBegan:Connect(function(k,g)
 				if g then return end
 				if k == nil then return end
 				if k.KeyCode == Enum.KeyCode.Space then
@@ -733,17 +734,17 @@ AirJump = Motion.NewButton({
 				end
 			end)
 		else
-			library.RBXScriptConnections['AirJump']:Disconnect()
+			RBXScriptConnections['AirJump']:Disconnect()
 		end
 	end,
 })
 
---[[table.insert(library.RBXScriptConnections, 'Nuker')
+--[[table.insert(RBXScriptConnections, 'Nuker')
 Nuker = Exploit.NewButton({
 	Name = "Nuker",
 	Function = function(callback)
 		if callback then
-			library.RBXScriptConnections['Nuker'] = RunService.Heartbeat:Connect(function()
+			RBXScriptConnections['Nuker'] = RunService.Heartbeat:Connect(function()
 				if utils.isAlive(lplr) then
 					local nearest = getNearestObject('bed', 30)
 					if nearest then
@@ -769,7 +770,7 @@ Nuker = Exploit.NewButton({
 				end
 			end)
 		else
-			library.RBXScriptConnections['Nuker']:Disconnect()
+			RBXScriptConnections['Nuker']:Disconnect()
 		end
 	end,
 })]]

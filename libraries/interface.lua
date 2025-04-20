@@ -13,7 +13,6 @@ local TweenService: TweenService = cloneref(game:GetService('TweenService'))
 local HttpService: HttpService = cloneref(game:GetService('HttpService'))
 local lplr = Players.LocalPlayer
 local PlayerGui = lplr.PlayerGui
-library.RBXScriptConnections = {}
 
 local cfgpath: string = "polaris/configs/"..game.PlaceId..".json"
 local cansave = true
@@ -535,9 +534,6 @@ function library:uninject()
         end
         config.Keybinds[i] = nil
     end
-	for i,v in pairs(library.RBXScriptConnections) do
-		v:Disconnect()
-	end
 
 	library.ScreenGui:Destroy()
 	table.clear(arrayItems)
