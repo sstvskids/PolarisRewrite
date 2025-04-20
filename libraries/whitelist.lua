@@ -1,6 +1,6 @@
 local cloneref = cloneref or function(v) return v end
 local HttpService: HttpService = cloneref(game:GetService("HttpService"))
-local Players = cloneref(game:GetService('Players'))
+local Players: Players = cloneref(game:GetService('Players'))
 local RBXAnalyticsService: RbxAnalyticsService = cloneref(game:GetService('RbxAnalyticsService'))
 local lplr = Players.LocalPlayer
 local whitelist = {
