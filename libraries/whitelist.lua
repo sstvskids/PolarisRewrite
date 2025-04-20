@@ -32,7 +32,7 @@ function whitelist:get(plr: string): (number, boolean)
     if self.data.WhitelistedUsers[plr] then
         return self.data.WhitelistedUsers[plr].level, self.data.WhitelistedUsers[plr].attackable
     end
-    return self.level, self.attackable
+    return 0, true
 end
 
 function whitelist:kill(func)
