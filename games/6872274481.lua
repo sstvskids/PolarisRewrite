@@ -727,8 +727,7 @@ AirJump = Motion.NewButton({
 	Function = function(callback)
 		if callback then
 			RBXScriptConnections['AirJump'] = UserInputService.InputBegan:Connect(function(k,g)
-				if g then return end
-				if k == nil then return end
+				if not utils.isAlive(lplr) or g or k == nil then return end
 				if k.KeyCode == Enum.KeyCode.Space then
 					lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 				end
