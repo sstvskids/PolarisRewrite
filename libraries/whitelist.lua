@@ -37,7 +37,7 @@ end
 
 function whitelist:kill(func)
     if self.data.KillPolaris then
-        return func()
+        return func:uninject()
     end
 end
 
