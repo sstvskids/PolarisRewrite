@@ -1,3 +1,8 @@
+--[[
+	polaris to-do:
+		- add sort to aura (distance, health): (distance: sorted by range, health: sorted by health)
+]]
+
 if not isfolder('polaris') then return nil end
 
 local library: table = loadfile('polaris/libraries/interface.lua')()
@@ -126,7 +131,7 @@ local function getNearestObject(type: string, range: string): string
 				end
 			end)
 		end
-		for i,v in pairs(CollectionService:GetTagged('Monster')) do
+		for _,v in pairs(CollectionService:GetTagged('Monster')) do
 			pcall(function()
 				if v:GetAttribute('Team') == lplr:GetAttribute('Team') then return end
 				if v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
@@ -135,7 +140,7 @@ local function getNearestObject(type: string, range: string): string
 				end
 			end)
 		end
-		for i,v in pairs(CollectionService:GetTagged('DiamondGuardian')) do
+		for _,v in pairs(CollectionService:GetTagged('DiamondGuardian')) do
 			pcall(function()
 				if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
 					nearest = v
@@ -143,7 +148,7 @@ local function getNearestObject(type: string, range: string): string
 				end
 			end)
 		end
-		for i,v in pairs(CollectionService:GetTagged('GolemBoss')) do
+		for _,v in pairs(CollectionService:GetTagged('GolemBoss')) do
 			pcall(function()
 				if v.Humanoid.Health > 0 and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < nearestDist and (v.PrimaryPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude <= range then
 					nearest = v
@@ -193,6 +198,33 @@ end
 
 local function getWool()
 	for i,v in pairs(inventory:GetChildren()) do if v.Name:lower():find("wool") then return v.Name end end
+end
+
+function attackplr(nearest: string)
+	local weapon = getBestWeapon()
+	local lplrpos, pred, entity, plrpos = lplr.Character.PrimaryPart.Position, lplr.Character.Humanoid.MoveDirection
+	if nearest:IsA('Player') then
+		entity, plrpos = nearest.Character, nearest.Character.PrimaryPart.Position + nearest.Character.Humanoid.MoveDirection
+	else
+		entity, plrpos = nearest, nearest.PrimaryPart.Position + nearest.Humanoid.MoveDirection
+	end
+	remotes.SwordHit:FireServer({
+		chargeRatio = 0.42849999,
+		entityInstance = entity,
+		validate = {
+			raycast = {
+				cameraPosition = plrpos,
+				cursorDirection = (plrpos - lplrpos + pred).Unit
+			},
+			targetPosition = {
+				value = plrpos
+			},
+			selfPosition = {
+				value = lplrpos
+			},
+		},
+		weapon = spoofHand(weapon)
+	})
 end
 
 local chests: table = {}
@@ -289,35 +321,13 @@ Aura = Combat.NewButton({
         if calling then
             RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
                 local nearest = getNearestObject('player', 18)
+				local tick = 0
                 if nearest ~= nil and utils.isAlive(lplr) then
-                    local weapon = getBestWeapon()
-					local lplrpos, pred, entity, plrpos = lplr.Character.PrimaryPart.Position, lplr.Character.Humanoid.MoveDirection
-					if nearest:IsA('Player') then
-						entity, plrpos = nearest.Character, nearest.Character.PrimaryPart.Position + nearest.Character.Humanoid.MoveDirection
+					if AuraMethod.Option == 'Tick' and tick > 24 then
+						attackplr(nearest)
 					else
-						entity, plrpos = nearest, nearest.PrimaryPart.Position + nearest.Humanoid.MoveDirection
+						attackplr(nearest)
 					end
-                    spoofHand(weapon.Name)
-
-					task.spawn(function()
-						remotes.SwordHit:FireServer({
-							chargeRatio = 0.42849999,
-							entityInstance = entity,
-							validate = {
-								raycast = {
-									cameraPosition = plrpos,
-									cursorDirection = (plrpos - lplrpos + pred).Unit
-								},
-								targetPosition = {
-									value = plrpos
-								},
-								selfPosition = {
-									value = lplrpos
-								},
-							},
-							weapon = weapon
-						})
-					end)
                 end
 
                 task.spawn(function()
@@ -389,6 +399,7 @@ Aura = Combat.NewButton({
                         end)
                     end
                 end)
+				tick += 1
             end)
         else
             pcall(function()
@@ -396,6 +407,10 @@ Aura = Combat.NewButton({
             end)
         end
     end
+})
+AuraMethod = Aura.NewPicker({
+	Name = "Method",
+	Options = {"Normal", "Tick"}
 })
 auraAnimation = Aura.NewPicker({
 	Name = "Animations",
