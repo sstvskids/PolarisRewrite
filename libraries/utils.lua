@@ -33,8 +33,11 @@ utils.getMaxHealth = function(plr: string): Players
     if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.MaxHealth end
     return 100
 end
-utils.getServerPos = function(pos)
+utils.getServerPos = function(pos: string)
 	return Vector3.new(math.round(pos.X) / 3, math.round(pos.Y) / 3, math.round(pos.Z) / 3)
+end
+utils.veloPos = function(pos: string, velo: string)
+	return Vector3.new(math.round(pos.X), math.round(pos.Y + velo), math.round(pos.Z))
 end
 
 return utils

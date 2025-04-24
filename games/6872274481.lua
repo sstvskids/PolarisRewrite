@@ -483,7 +483,11 @@ NoFall = Misc.NewButton({
                 if utils.isAlive(lplr) and not Fly.Enabled and not utils.onGround() then
 					task.wait()
 					if Method.Option == 'Velocity' then
-						lplr.Character.PrimaryPart.Velocity = Vector3.new(lplr.Character.PrimaryPart.Velocity.X, math.round(lplr.Character.PrimaryPart.Velocity.Y + -2), lplr.Character.PrimaryPart.Velocity.Z)
+						if lplr.Character.PrimaryPart.Velocity.Y <= 0 then
+							lplr.Character.PrimaryPart.Velocity = utils.veloPos(lplr.Character.PrimaryPart.Velocity, -2)
+						else
+							lplr.Character.PrimaryPart.Velocity = utils.veloPos(lplr.Character.PrimaryPart.Velocity, 2)
+						end
 					elseif Method.Option == 'State' then
 						lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
