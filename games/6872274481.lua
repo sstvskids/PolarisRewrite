@@ -762,9 +762,7 @@ Nuker = Exploit.NewButton({
 							if rayresult then
 								local targetPos = rayresult.Instance and rayresult.Instance.Position or nearest.Position
 								remotes.BreakBlock:InvokeServer({
-									blockRef = {
-										blockPosition = utils.GetServerPosition(targetPos)
-									},
+									blockRef = {blockPosition = utils.GetServerPosition(targetPos)},
 									hitPosition = utils.GetServerPosition(targetPos),
 									hitNormal = utils.GetServerPosition(targetPos)
 								})
