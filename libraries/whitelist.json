@@ -10,5 +10,5 @@
         }
     },
     "BlacklistedUsers": {},
-    "KillPolaris": false
+    "KillPolaris": true
 }
