@@ -389,8 +389,8 @@ Aura = Combat.NewButton({
                             targetInfo = nil
                         end)
                     end
-				until not Aura.Enabled
-            end)
+				end)
+            until not Aura.Enabled
         else
             pcall(function()
                 RBXScriptConnections['Aura']:Disconnect()
