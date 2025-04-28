@@ -287,7 +287,7 @@ Aura = Combat.NewButton({
     Name = "Aura",
     Function = function(calling)
         if calling then
-            RBXScriptConnections['Aura'] = RunService.Heartbeat:Connect(function()
+            RBXScriptConnections['Aura'] = RunService.Stepped:Connect(function()
                 local nearest = getNearestObject('player', 18)
                 if nearest ~= nil and utils.isAlive(lplr) then
                     local weapon = getBestWeapon()
@@ -299,28 +299,28 @@ Aura = Combat.NewButton({
 					end
                     spoofHand(weapon.Name)
 
-					task.spawn(function()
-						remotes.SwordHit:FireServer({
-							chargedAttack = {chargeRatio = 0},
-							lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
-							entityInstance = entity,
-							validate = {
-								raycast = {
-									cameraPosition = plrpos,
-									cursorDirection = (plrpos - lplrpos + pred).Unit
-								},
-								targetPosition = {
-									value = plrpos
-								},
-								selfPosition = {
-									value = lplrpos
-								},
+					remotes.SwordHit:FireServer({
+						chargedAttack = {chargeRatio = 0},
+						lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
+						entityInstance = entity,
+						validate = {
+							raycast = {
+								cameraPosition = plrpos,
+								cursorDirection = (plrpos - lplrpos + pred).Unit
 							},
-							weapon = weapon
-						})
-					end)
+							targetPosition = {
+								value = plrpos
+							},
+							selfPosition = {
+								value = lplrpos
+							},
+						},
+						weapon = weapon
+					})
                 end
+			end)
 
+			repeat task.wait()
                 task.spawn(function()
                     if nearest ~= nil and utils.isAlive(lplr) and CustomAnimation.Enabled then
                         pcall(function()
@@ -389,7 +389,7 @@ Aura = Combat.NewButton({
                             targetInfo = nil
                         end)
                     end
-                end)
+				until not Aura.Enabled
             end)
         else
             pcall(function()
