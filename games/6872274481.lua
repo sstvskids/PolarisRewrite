@@ -73,17 +73,17 @@ Legit = library.NewWindow('Legit')
 local _NetManaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules["@rbxts"].net.out._NetManaged
 local blockenginemanaged: ReplicatedStorage = ReplicatedStorage.rbxts_include.node_modules:WaitForChild("@easy-games"):WaitForChild("block-engine").node_modules:WaitForChild("@rbxts").net.out:WaitForChild("_NetManaged")
 
-local function getRemote(name: string): string
-    local remote
-    task.spawn(function()
-        for i,v in pairs(game:GetDescendants()) do
-            if v.Name == name then
-                remote = v
-                break
-            end
-        end
-    end)
-    return remote
+
+local function getRemote(name: RemoteEvent | RemoteFunction): RemoteEvent | RemoteFunction
+	local remote
+	for _,v in pairs(game:GetDescendants()) do
+		if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
+			remote = v
+			break
+		end
+	end
+	if name == nil then return Instance.new('RemoteEvent') end
+	return remote
 end
 
 local remotes: table = {

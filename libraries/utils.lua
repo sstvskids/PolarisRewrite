@@ -30,7 +30,9 @@ utils.isAlive = function(plr: string): Players
 end
 utils.getMaxHealth = function(plr: string): Players
     plr = plr or lplr
-    if plr.Character and plr.Character:FindFirstChild('Humanoid') then return plr.Character.Humanoid.MaxHealth end
+    if plr.Character and plr.Character:FindFirstChild('Humanoid') then
+        return plr.Character.Humanoid.MaxHealth
+    end
     return 100
 end
 utils.getServerPos = function(pos: string)
